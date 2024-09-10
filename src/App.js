@@ -64,6 +64,13 @@ const Skill = ({ name, level }) => {
   );
 };
 
+const LanguageItem = ({ language, level }) => (
+  <div className="flex items-center justify-between p-2 bg-gray-100 rounded-lg mb-2 hover:bg-gray-200 transition-colors duration-300">
+    <span className="font-medium">{language}</span>
+    <span className="text-sm px-2 py-1 bg-blue-500 text-white rounded-full">{level}</span>
+  </div>
+);
+
 const App = () => {
   const skills = [
     { name: '.NET C#', level: 5 },
@@ -180,6 +187,13 @@ const App = () => {
               details={["Final grade: Excellent"]}
             />
           </div>
+
+          <h3 className="text-2xl font-semibold mb-4 mt-8">Languages</h3>
+          <div>
+            <LanguageItem language="Arabic" level="Native" />
+            <LanguageItem language="English" level="C1" />
+            <LanguageItem language="German" level="B2" />
+          </div>
         </section>
       </div>
 
@@ -190,15 +204,6 @@ const App = () => {
             <Skill key={skill.name} name={skill.name} level={skill.level} />
           ))}
         </div>
-      </section>
-
-      <section>
-        <h3 className="text-2xl font-semibold mb-4">Languages</h3>
-        <ul className="list-disc pl-5">
-          <li>Arabic - Native</li>
-          <li>English - C1</li>
-          <li>German - B2</li>
-        </ul>
       </section>
     </div>
   );

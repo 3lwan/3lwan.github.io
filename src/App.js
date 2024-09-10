@@ -1,5 +1,7 @@
 import React from 'react';
 import { Github, Linkedin, Mail, MapPin, Phone } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXing } from '@fortawesome/free-brands-svg-icons';
 
 const App = () => {
   return (
@@ -30,41 +32,58 @@ const App = () => {
           <a href="https://www.linkedin.com/in/mohamed-elwan/" className="text-gray-600 hover:text-gray-900">
             <Linkedin className="w-6 h-6" />
           </a>
+          <a href="https://www.xing.com/profile/Mohamed_Elwan2/cv" className="text-gray-600 hover:text-gray-900">
+            <FontAwesomeIcon icon={faXing} className="w-6 h-6" />
+          </a>
         </div>
       </header>
 
       <section className="mb-8">
         <h3 className="text-2xl font-semibold mb-4">Professional Experience</h3>
-        <div className="space-y-4">
-          <div>
-            <h4 className="text-xl font-medium">Flaschenpost | FullStack Developer</h4>
-            <p className="text-gray-600">Jun, 2022 – Present</p>
-            <ul className="list-disc pl-5 mt-2">
-              <li>Maintain/improve the B2B Webshop</li>
-              <li>Maintain/improve internal APIs</li>
-              <li>Maintain/improve Azure functions</li>
-              <li>Contact with different business customers for ERP system integration</li>
-              <li>Design/Architect team's different projects</li>
-            </ul>
-            <p className="mt-2"><strong>Main Stack:</strong> .NET, Blazor, HTML, CSS, Javascript, SQL, Azure, Kubernetes</p>
-          </div>
-          <div>
-            <h4 className="text-xl font-medium">INVERS | Backend Developer</h4>
-            <p className="text-gray-600">Jul, 2020 – Jun, 2022</p>
-            <p>Maintaining existing microservices and creating new ones using .Net Framework (C#), Docker, Kubernetes/Helm, Gitlab and MongoDB.</p>
-          </div>
-          <div>
-            <h4 className="text-xl font-medium">Conze Informatik | Software Architect / Team Leader</h4>
-            <p className="text-gray-600">Mar, 2019 – Jul, 2020</p>
-            <ul className="list-disc pl-5 mt-2">
-              <li>Guiding and supporting team development</li>
-              <li>Code reviewing</li>
-              <li>Software architecture planning for complex tasks</li>
-              <li>Regular meetings with customers</li>
-              <li>Technical contact for customers</li>
-              <li>Effort estimation for tasks</li>
-            </ul>
-          </div>
+        <div className="relative border-l-2 border-gray-300 pl-8 ml-4">
+          {[
+            {
+              title: "Flaschenpost | FullStack Developer",
+              date: "Jun, 2022 – Present",
+              details: [
+                "Maintain/improve the B2B Webshop",
+                "Maintain/improve internal APIs",
+                "Maintain/improve Azure functions",
+                "Contact with different business customers for ERP system integration",
+                "Design/Architect team's different projects",
+              ],
+              stack: ".NET, Blazor, HTML, CSS, Javascript, SQL, Azure, Kubernetes",
+            },
+            {
+              title: "INVERS | Backend Developer",
+              date: "Jul, 2020 – Jun, 2022",
+              details: ["Maintaining existing microservices and creating new ones using .Net Framework (C#), Docker, Kubernetes/Helm, Gitlab and MongoDB."],
+            },
+            {
+              title: "Conze Informatik | Software Architect / Team Leader",
+              date: "Mar, 2019 – Jul, 2020",
+              details: [
+                "Guiding and supporting team development",
+                "Code reviewing",
+                "Software architecture planning for complex tasks",
+                "Regular meetings with customers",
+                "Technical contact for customers",
+                "Effort estimation for tasks",
+              ],
+            },
+          ].map((job, index) => (
+            <div key={index} className="mb-8 relative">
+              <div className="absolute -left-10 mt-1 w-4 h-4 rounded-full bg-blue-500 border-4 border-white"></div>
+              <h4 className="text-xl font-medium">{job.title}</h4>
+              <p className="text-gray-600">{job.date}</p>
+              <ul className="list-disc pl-5 mt-2">
+                {job.details.map((detail, i) => (
+                  <li key={i}>{detail}</li>
+                ))}
+              </ul>
+              {job.stack && <p className="mt-2"><strong>Main Stack:</strong> {job.stack}</p>}
+            </div>
+          ))}
         </div>
       </section>
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Github, Linkedin, Mail, MapPin, Phone } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXing } from '@fortawesome/free-brands-svg-icons';
@@ -73,36 +73,46 @@ const LanguageItem = ({ language, level }) => (
 
 const ExperienceCard = ({ company, logo, title, date, details, stack }) => {
   const [isFlipped, setIsFlipped] = useState(false);
+  const [cardHeight, setCardHeight] = useState('auto');
+  const frontRef = useRef(null);
+
+  useEffect(() => {
+    if (frontRef.current) {
+      setCardHeight(frontRef.current.offsetHeight);
+    }
+  }, []);
 
   return (
     <div
-      className="mb-6 h-64 relative [perspective:1000px]"
+      className="mb-6 relative perspective"
       onMouseEnter={() => setIsFlipped(true)}
       onMouseLeave={() => setIsFlipped(false)}
+      style={{ height: cardHeight }}
     >
-      <div className={`relative w-full h-full transition-transform duration-500 [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}>
-        <div className="absolute w-full h-full [backface-visibility:hidden]">
-          <div className="bg-white rounded-lg shadow-md p-6 h-full">
-            <div className="flex items-center mb-4">
-              <img src={logo} alt={`${company} logo`} className="w-12 h-12 mr-4 rounded-full" />
-              <div>
-                <h4 className="text-xl font-semibold">{company}</h4>
-                <p className="text-gray-600">{title}</p>
+      <div className={`flex-shrink-0 flex-grow-0 h-full relative w-full transition-transform duration-500 preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
+        <div className="w-full h-full backface-hidden" ref={frontRef}>
+          {!isFlipped ? (
+            <div className="bg-white rounded-lg shadow-md p-6 h-full">
+              <div className="flex items-center mb-4">
+                <img src={logo} alt={`${company} logo`} className="w-12 h-12 mr-4 rounded-full" />
+                <div>
+                  <h4 className="text-xl font-semibold">{company}</h4>
+                  <p className="text-gray-600">{title}</p>
+                </div>
               </div>
+              <p className="text-gray-600 mb-2">{date}</p>
+              <ul className="list-disc pl-5 mb-2">
+                {details.map((detail, index) => (
+                  <li key={index} className="text-gray-700">{detail}</li>
+                ))}
+              </ul>
             </div>
-            <p className="text-gray-600 mb-2">{date}</p>
-            <ul className="list-disc pl-5 mb-2">
-              {details.map((detail, index) => (
-                <li key={index} className="text-gray-700">{detail}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
-        <div className="absolute w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)]">
-          <div className="bg-blue-100 rounded-lg shadow-md p-6 h-full flex flex-col justify-center items-center">
-            <h4 className="text-xl font-semibold mb-4">Main Stack</h4>
-            <p className="text-center">{stack}</p>
-          </div>
+          ) : (
+            <div className="bg-blue-100 rounded-lg shadow-md p-6 h-full flex flex-col justify-center items-center">
+              <h4 className="text-xl font-semibold mb-4">Main Stack</h4>
+              <p className="text-center">{stack}</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -212,7 +222,7 @@ const App = () => {
       </header>
 
       <div className="flex flex-col md:flex-row gap-8 px-8">
-        <section className="mb-8 md:w-1/2">
+        <section className="mb-8 md:w-1/2 flex flex-col items-stretch">
           <h3 className="text-2xl font-semibold mb-6">Professional Experience</h3>
           {experiences.map((exp, index) => (
             <ExperienceCard key={index} {...exp} />

@@ -125,14 +125,14 @@ const App = () => {
         </div>
       </header>
 
-      <div className="flex flex-col md:flex-row gap-8">
+      <div className="flex flex-col md:flex-row gap-8 px-8">
         <section className="mb-8 md:w-1/2">
           <h3 className="text-2xl font-semibold mb-4">Professional Experience</h3>
           <div className="relative border-l-2 border-gray-300 pl-8 ml-4">
             {[
               {
                 title: "Flaschenpost | FullStack Developer",
-                date: "Jun, 2022 – Present",
+                date: "Jun, 2022 – Sept, 2024",
                 details: [
                   "Maintain/improve the B2B Webshop",
                   "Maintain/improve internal APIs",

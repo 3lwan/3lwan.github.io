@@ -229,7 +229,7 @@ const App = () => {
           ))}
         </section>
 
-        <div className="md:w-1/4">
+        <div className="md:w-1/3">
           <section className="mb-8">
             <h3 className="text-2xl font-semibold mb-4">Education</h3>
             <div className="relative border-l-2 border-gray-300 pl-8 ml-4">
@@ -258,7 +258,7 @@ const App = () => {
           </section>
         </div>
 
-        <section className="mb-8 md:w-1/4">
+        <section className="mb-8 md:w-1/7">
           <h3 className="text-2xl font-semibold mb-4">Skills</h3>
           <div className="flex flex-col gap-2">
             {skills.map((skill) => (

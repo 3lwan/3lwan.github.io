@@ -57,7 +57,8 @@ const App = () => {
             {
               title: "INVERS | Backend Developer",
               date: "Jul, 2020 – Jun, 2022",
-              details: ["Maintaining existing microservices and creating new ones using .Net Framework (C#), Docker, Kubernetes/Helm, Gitlab and MongoDB."],
+              details: ["Maintaining existing microservices and creating new ones."],
+              stack: ".Net(C#), Docker, Kubernetes/Helm, Gitlab and MongoDB.",
             },
             {
               title: "Conze Informatik | Software Architect / Team Leader",
@@ -71,6 +72,11 @@ const App = () => {
                 "Effort estimation for tasks",
               ],
             },
+            {
+              title: "Conze Informatik | Software Developer",
+              date: "Nov, 2017 – Mar, 2019",
+              details: [".Net Software Developer using C++, C# and XAML for desktop applications using WPF."],
+            }
           ].map((job, index) => (
             <div key={index} className="mb-8 relative">
               <div className="absolute -left-10 mt-1 w-4 h-4 rounded-full bg-blue-500 border-4 border-white"></div>

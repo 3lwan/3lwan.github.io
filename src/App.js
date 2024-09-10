@@ -20,7 +20,66 @@ const TimelineItem = ({ title, subtitle, date, details, stack }) => (
   </div>
 );
 
+const Skill = ({ name, level }) => {
+  const getColor = (level) => {
+    switch (level) {
+      case 5: return 'rgb(0, 128, 0)'; // dark green
+      case 4: return 'rgb(0, 128, 0)'; // dark green
+      case 3: return 'rgb(204, 204, 0)'; // dark yellow
+      case 2: return 'rgb(255, 140, 0)'; // dark orange
+      case 1: return 'rgb(204, 0, 0)'; // dark red
+      default: return 'rgb(0, 0, 255)'; // dark blue
+    }
+  };
+
+  const getFillPercentage = (level) => {
+    return `${(level / 5) * 100}%`;
+  };
+
+  const getTextColor = (level) => {
+    return level > 3 ? 'white' : 'black';
+  };
+
+  return (
+    <span
+      className="px-3 py-1 rounded-full text-sm relative overflow-hidden group bg-blue-100 text-blue-800"
+      style={{
+        '--skill-color': getColor(level),
+        '--skill-fill': getFillPercentage(level),
+        '--skill-text-color': getTextColor(level),
+      }}
+    >
+      <span
+        className="relative z-10 transition-colors duration-300 group-hover:text-[var(--skill-text-color)]"
+      >
+        {name}
+      </span>
+      <span
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        style={{
+          background: `linear-gradient(to right, var(--skill-color) var(--skill-fill), transparent var(--skill-fill))`,
+        }}
+      ></span>
+    </span>
+  );
+};
+
 const App = () => {
+  const skills = [
+    { name: '.NET C#', level: 5 },
+    { name: 'Rest APIs', level: 5 },
+    { name: 'Git/Gitlab', level: 5 },
+    { name: 'Microservices', level: 4 },
+    { name: 'Blazor', level: 4 },
+    { name: 'Docker', level: 4 },
+    { name: 'Azure', level: 3 },
+    { name: 'SQL', level: 3 },
+    { name: 'Javascript', level: 3 },
+    { name: 'Python', level: 2 },
+    { name: 'Angular', level: 2 },
+    { name: 'Kubernetes', level: 1 },
+  ];
+
   return (
     <div className="max-w-6xl mx-auto p-8 bg-gray-100 min-h-screen">
       <header className="mb-8 text-center">
@@ -123,10 +182,8 @@ const App = () => {
       <section className="mb-8">
         <h3 className="text-2xl font-semibold mb-4">Skills</h3>
         <div className="flex flex-wrap gap-2">
-          {['.NET C#', 'Rest APIs', 'Microservices', 'Git/Gitlab', 'Blazor', 'SQL', 'Javascript', 'Python', 'Docker/Kubernetes/Helm', 'Angular', 'Azure'].map((skill) => (
-            <span key={skill} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
-              {skill}
-            </span>
+          {skills.map((skill) => (
+            <Skill key={skill.name} name={skill.name} level={skill.level} />
           ))}
         </div>
       </section>

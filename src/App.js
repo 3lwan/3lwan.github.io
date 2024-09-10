@@ -26,13 +26,13 @@ const App = () => {
           </div>
         </div>
         <div className="flex justify-center space-x-4 mt-4">
-          <a href="https://github.com/3lwan" className="text-gray-600 hover:text-gray-900">
+          <a href="https://github.com/3lwan" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900">
             <Github className="w-6 h-6" />
           </a>
-          <a href="https://www.linkedin.com/in/mohamed-elwan/" className="text-gray-600 hover:text-gray-900">
+          <a href="https://www.linkedin.com/in/mohamed-elwan/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900">
             <Linkedin className="w-6 h-6" />
           </a>
-          <a href="https://www.xing.com/profile/Mohamed_Elwan2/cv" className="text-gray-600 hover:text-gray-900">
+          <a href="https://www.xing.com/profile/Mohamed_Elwan2/cv" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900">
             <FontAwesomeIcon icon={faXing} className="w-6 h-6" />
           </a>
         </div>

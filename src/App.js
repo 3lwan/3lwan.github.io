@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Github, Linkedin, Mail, MapPin, Phone } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXing } from '@fortawesome/free-brands-svg-icons';
@@ -71,6 +71,44 @@ const LanguageItem = ({ language, level }) => (
   </div>
 );
 
+const ExperienceCard = ({ company, logo, title, date, details, stack }) => {
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  return (
+    <div
+      className="mb-6 h-64 relative [perspective:1000px]"
+      onMouseEnter={() => setIsFlipped(true)}
+      onMouseLeave={() => setIsFlipped(false)}
+    >
+      <div className={`relative w-full h-full transition-transform duration-500 [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}>
+        <div className="absolute w-full h-full [backface-visibility:hidden]">
+          <div className="bg-white rounded-lg shadow-md p-6 h-full">
+            <div className="flex items-center mb-4">
+              <img src={logo} alt={`${company} logo`} className="w-12 h-12 mr-4 rounded-full" />
+              <div>
+                <h4 className="text-xl font-semibold">{company}</h4>
+                <p className="text-gray-600">{title}</p>
+              </div>
+            </div>
+            <p className="text-gray-600 mb-2">{date}</p>
+            <ul className="list-disc pl-5 mb-2">
+              {details.map((detail, index) => (
+                <li key={index} className="text-gray-700">{detail}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <div className="absolute w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)]">
+          <div className="bg-blue-100 rounded-lg shadow-md p-6 h-full flex flex-col justify-center items-center">
+            <h4 className="text-xl font-semibold mb-4">Main Stack</h4>
+            <p className="text-center">{stack}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const App = () => {
   const skills = [
     { name: '.NET C#', level: 5 },
@@ -93,6 +131,54 @@ const App = () => {
       {children}
     </div>
   );
+
+  const experiences = [
+    {
+      company: "Flaschenpost",
+      logo: "path_to_flaschenpost_logo.png", // Replace with actual logo path
+      title: "FullStack Developer",
+      date: "Jun, 2022 – Present",
+      details: [
+        "Maintain/improve the B2B Webshop",
+        "Maintain/improve internal APIs",
+        "Maintain/improve Azure functions",
+        "Contact with different business customers for ERP system integration",
+        "Design/Architect team's different projects",
+      ],
+      stack: ".NET, Blazor, HTML, CSS, Javascript, SQL, Azure, Kubernetes",
+    },
+    {
+      company: "INVERS",
+      logo: "path_to_invers_logo.png", // Replace with actual logo path
+      title: "Backend Developer",
+      date: "Jul, 2020 – Jun, 2022",
+      details: ["Maintaining existing microservices and creating new ones."],
+      stack: ".Net(C#), Docker, Kubernetes/Helm, Gitlab and MongoDB.",
+    },
+    {
+      company: "Conze Informatik",
+      logo: "path_to_conze_logo.png", // Replace with actual logo path
+      title: "Software Architect / Team Leader",
+      date: "Mar, 2019 – Jul, 2020",
+      details: [
+        "Guiding and supporting team development",
+        "Code reviewing",
+        "Software architecture planning for complex tasks",
+        "Regular meetings with customers",
+        "Technical contact for customers",
+        "Effort estimation for tasks",
+      ],
+      stack: ".NET, C#, WPF, XAML",
+    },
+    {
+      company: "Conze Informatik",
+      logo: "path_to_conze_logo.png", // Replace with actual logo path
+      title: "Software Developer",
+      date: "Nov, 2017 – Mar, 2019",
+      details: [".Net Software Developer using C++, C# and XAML for desktop applications using WPF."],
+      stack: ".NET, C++, C#, WPF, XAML",
+    },
+  ];
 
   return (
     <div className="max-w-6xl mx-auto bg-gradient-to-b from-gray-100 to-white min-h-screen">
@@ -127,48 +213,10 @@ const App = () => {
 
       <div className="flex flex-col md:flex-row gap-8 px-8">
         <section className="mb-8 md:w-1/2">
-          <h3 className="text-2xl font-semibold mb-4">Professional Experience</h3>
-          <div className="relative border-l-2 border-gray-300 pl-8 ml-4">
-            {[
-              {
-                title: "Flaschenpost | FullStack Developer",
-                date: "Jun, 2022 – Sept, 2024",
-                details: [
-                  "Maintain/improve the B2B Webshop",
-                  "Maintain/improve internal APIs",
-                  "Maintain/improve Azure functions",
-                  "Contact with different business customers for ERP system integration",
-                  "Design/Architect team's different projects",
-                ],
-                stack: ".NET, Blazor, HTML, CSS, Javascript, SQL, Azure, Kubernetes",
-              },
-              {
-                title: "INVERS | Backend Developer",
-                date: "Jul, 2020 – Jun, 2022",
-                details: ["Maintaining existing microservices and creating new ones."],
-                stack: ".Net(C#), Docker, Kubernetes/Helm, Gitlab and MongoDB.",
-              },
-              {
-                title: "Conze Informatik | Software Architect / Team Leader",
-                date: "Mar, 2019 – Jul, 2020",
-                details: [
-                  "Guiding and supporting team development",
-                  "Code reviewing",
-                  "Software architecture planning for complex tasks",
-                  "Regular meetings with customers",
-                  "Technical contact for customers",
-                  "Effort estimation for tasks",
-                ],
-              },
-              {
-                title: "Conze Informatik | Software Developer",
-                date: "Nov, 2017 – Mar, 2019",
-                details: [".Net Software Developer using C++, C# and XAML for desktop applications using WPF."],
-              }
-            ].map((job, index) => (
-              <TimelineItem key={index} {...job} />
-            ))}
-          </div>
+          <h3 className="text-2xl font-semibold mb-6">Professional Experience</h3>
+          {experiences.map((exp, index) => (
+            <ExperienceCard key={index} {...exp} />
+          ))}
         </section>
 
         <div className="md:w-1/4">

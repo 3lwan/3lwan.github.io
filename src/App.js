@@ -147,7 +147,7 @@ const App = () => {
       company: "Flaschenpost",
       logo: "path_to_flaschenpost_logo.png", // Replace with actual logo path
       title: "FullStack Developer",
-      date: "Jun, 2022 – Present",
+      date: "Jun, 2022 – Sept, 2024",
       details: [
         "Maintain/improve the B2B Webshop",
         "Maintain/improve internal APIs",

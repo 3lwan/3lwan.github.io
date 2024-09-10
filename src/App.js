@@ -126,7 +126,7 @@ const App = () => {
       </header>
 
       <div className="flex flex-col md:flex-row gap-8">
-        <section className="mb-8 md:w-2/3">
+        <section className="mb-8 md:w-1/2">
           <h3 className="text-2xl font-semibold mb-4">Professional Experience</h3>
           <div className="relative border-l-2 border-gray-300 pl-8 ml-4">
             {[
@@ -171,40 +171,44 @@ const App = () => {
           </div>
         </section>
 
-        <section className="mb-8 md:w-1/3">
-          <h3 className="text-2xl font-semibold mb-4">Education</h3>
-          <div className="relative border-l-2 border-gray-300 pl-8 ml-4">
-            <TimelineItem
-              title="M.Sc. in Mechatronics Engineering"
-              subtitle="Universität Siegen"
-              date="2014 – 2017"
-              details={["Final grade: 1.1"]}
-            />
-            <TimelineItem
-              title="B.Sc. in Engineering and Material Science"
-              subtitle="German University in Cairo"
-              date="2007 – 2012"
-              details={["Final grade: Excellent"]}
-            />
-          </div>
+        <div className="md:w-1/4">
+          <section className="mb-8">
+            <h3 className="text-2xl font-semibold mb-4">Education</h3>
+            <div className="relative border-l-2 border-gray-300 pl-8 ml-4">
+              <TimelineItem
+                title="M.Sc. in Mechatronics Engineering"
+                subtitle="Universität Siegen"
+                date="2014 – 2017"
+                details={["Final grade: 1.1"]}
+              />
+              <TimelineItem
+                title="B.Sc. in Engineering and Material Science"
+                subtitle="German University in Cairo"
+                date="2007 – 2012"
+                details={["Final grade: Excellent"]}
+              />
+            </div>
+          </section>
 
-          <h3 className="text-2xl font-semibold mb-4 mt-8">Languages</h3>
-          <div>
-            <LanguageItem language="Arabic" level="Native" />
-            <LanguageItem language="English" level="C1" />
-            <LanguageItem language="German" level="B2" />
+          <section className="mb-8">
+            <h3 className="text-2xl font-semibold mb-4">Languages</h3>
+            <div>
+              <LanguageItem language="Arabic" level="Native" />
+              <LanguageItem language="English" level="C1" />
+              <LanguageItem language="German" level="B2" />
+            </div>
+          </section>
+        </div>
+
+        <section className="mb-8 md:w-1/4">
+          <h3 className="text-2xl font-semibold mb-4">Skills</h3>
+          <div className="flex flex-col gap-2">
+            {skills.map((skill) => (
+              <Skill key={skill.name} name={skill.name} level={skill.level} />
+            ))}
           </div>
         </section>
       </div>
-
-      <section className="mb-8">
-        <h3 className="text-2xl font-semibold mb-4">Skills</h3>
-        <div className="flex flex-wrap gap-2">
-          {skills.map((skill) => (
-            <Skill key={skill.name} name={skill.name} level={skill.level} />
-          ))}
-        </div>
-      </section>
     </div>
   );
 };

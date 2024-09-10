@@ -3,9 +3,26 @@ import { Github, Linkedin, Mail, MapPin, Phone } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXing } from '@fortawesome/free-brands-svg-icons';
 
+const TimelineItem = ({ title, subtitle, date, details, stack }) => (
+  <div className="mb-8 relative">
+    <div className="absolute -left-10 mt-1 w-4 h-4 rounded-full bg-blue-500 border-4 border-white"></div>
+    <h4 className="text-xl font-medium">{title}</h4>
+    {subtitle && <p className="text-gray-600">{subtitle}</p>}
+    <p className="text-gray-600">{date}</p>
+    {details && (
+      <ul className="list-disc pl-5 mt-2">
+        {details.map((detail, i) => (
+          <li key={i}>{detail}</li>
+        ))}
+      </ul>
+    )}
+    {stack && <p className="mt-2"><strong>Main Stack:</strong> {stack}</p>}
+  </div>
+);
+
 const App = () => {
   return (
-    <div className="max-w-4xl mx-auto p-8 bg-gray-100 min-h-screen">
+    <div className="max-w-6xl mx-auto p-8 bg-gray-100 min-h-screen">
       <header className="mb-8 text-center">
         <h1 className="text-4xl font-bold mb-2">Mohamed Elwan</h1>
         <h2 className="text-2xl text-gray-600 mb-4">C# Software Developer</h2>
@@ -38,60 +55,70 @@ const App = () => {
         </div>
       </header>
 
-      <section className="mb-8">
-        <h3 className="text-2xl font-semibold mb-4">Professional Experience</h3>
-        <div className="relative border-l-2 border-gray-300 pl-8 ml-4">
-          {[
-            {
-              title: "Flaschenpost | FullStack Developer",
-              date: "Jun, 2022 – Present",
-              details: [
-                "Maintain/improve the B2B Webshop",
-                "Maintain/improve internal APIs",
-                "Maintain/improve Azure functions",
-                "Contact with different business customers for ERP system integration",
-                "Design/Architect team's different projects",
-              ],
-              stack: ".NET, Blazor, HTML, CSS, Javascript, SQL, Azure, Kubernetes",
-            },
-            {
-              title: "INVERS | Backend Developer",
-              date: "Jul, 2020 – Jun, 2022",
-              details: ["Maintaining existing microservices and creating new ones."],
-              stack: ".Net(C#), Docker, Kubernetes/Helm, Gitlab and MongoDB.",
-            },
-            {
-              title: "Conze Informatik | Software Architect / Team Leader",
-              date: "Mar, 2019 – Jul, 2020",
-              details: [
-                "Guiding and supporting team development",
-                "Code reviewing",
-                "Software architecture planning for complex tasks",
-                "Regular meetings with customers",
-                "Technical contact for customers",
-                "Effort estimation for tasks",
-              ],
-            },
-            {
-              title: "Conze Informatik | Software Developer",
-              date: "Nov, 2017 – Mar, 2019",
-              details: [".Net Software Developer using C++, C# and XAML for desktop applications using WPF."],
-            }
-          ].map((job, index) => (
-            <div key={index} className="mb-8 relative">
-              <div className="absolute -left-10 mt-1 w-4 h-4 rounded-full bg-blue-500 border-4 border-white"></div>
-              <h4 className="text-xl font-medium">{job.title}</h4>
-              <p className="text-gray-600">{job.date}</p>
-              <ul className="list-disc pl-5 mt-2">
-                {job.details.map((detail, i) => (
-                  <li key={i}>{detail}</li>
-                ))}
-              </ul>
-              {job.stack && <p className="mt-2"><strong>Main Stack:</strong> {job.stack}</p>}
-            </div>
-          ))}
-        </div>
-      </section>
+      <div className="flex flex-col md:flex-row gap-8">
+        <section className="mb-8 md:w-2/3">
+          <h3 className="text-2xl font-semibold mb-4">Professional Experience</h3>
+          <div className="relative border-l-2 border-gray-300 pl-8 ml-4">
+            {[
+              {
+                title: "Flaschenpost | FullStack Developer",
+                date: "Jun, 2022 – Present",
+                details: [
+                  "Maintain/improve the B2B Webshop",
+                  "Maintain/improve internal APIs",
+                  "Maintain/improve Azure functions",
+                  "Contact with different business customers for ERP system integration",
+                  "Design/Architect team's different projects",
+                ],
+                stack: ".NET, Blazor, HTML, CSS, Javascript, SQL, Azure, Kubernetes",
+              },
+              {
+                title: "INVERS | Backend Developer",
+                date: "Jul, 2020 – Jun, 2022",
+                details: ["Maintaining existing microservices and creating new ones."],
+                stack: ".Net(C#), Docker, Kubernetes/Helm, Gitlab and MongoDB.",
+              },
+              {
+                title: "Conze Informatik | Software Architect / Team Leader",
+                date: "Mar, 2019 – Jul, 2020",
+                details: [
+                  "Guiding and supporting team development",
+                  "Code reviewing",
+                  "Software architecture planning for complex tasks",
+                  "Regular meetings with customers",
+                  "Technical contact for customers",
+                  "Effort estimation for tasks",
+                ],
+              },
+              {
+                title: "Conze Informatik | Software Developer",
+                date: "Nov, 2017 – Mar, 2019",
+                details: [".Net Software Developer using C++, C# and XAML for desktop applications using WPF."],
+              }
+            ].map((job, index) => (
+              <TimelineItem key={index} {...job} />
+            ))}
+          </div>
+        </section>
+
+        <section className="mb-8 md:w-1/3">
+          <h3 className="text-2xl font-semibold mb-4">Education</h3>
+          <div className="relative border-l-2 border-gray-300 pl-8 ml-4">
+            <TimelineItem
+              title="M.Sc. in Mechatronics Engineering"
+              subtitle="Universität Siegen"
+              date="2014 – 2017"
+              details={["Final grade: 1.1"]}
+            />
+            <TimelineItem
+              title="B.Sc. in Engineering and Material Science"
+              subtitle="German University in Cairo"
+              date="2007 – 2012"
+              details={["Final grade: Excellent"]}
+            />
+          </div>
+        </section>
+      </div>
 
       <section className="mb-8">
         <h3 className="text-2xl font-semibold mb-4">Skills</h3>
@@ -101,22 +128,6 @@ const App = () => {
               {skill}
             </span>
           ))}
-        </div>
-      </section>
-
-      <section className="mb-8">
-        <h3 className="text-2xl font-semibold mb-4">Education</h3>
-        <div className="space-y-4">
-          <div>
-            <h4 className="text-xl font-medium">M.Sc. in Mechatronics Engineering</h4>
-            <p className="text-gray-600">Universität Siegen, 2014 – 2017</p>
-            <p>Final grade: 1.1</p>
-          </div>
-          <div>
-            <h4 className="text-xl font-medium">B.Sc. in Engineering and Material Science</h4>
-            <p className="text-gray-600">German University in Cairo, 2007 – 2012</p>
-            <p>Final grade: Excellent</p>
-          </div>
         </div>
       </section>
 

@@ -5,7 +5,7 @@ import { faXing } from '@fortawesome/free-brands-svg-icons';
 
 const TimelineItem = ({ title, subtitle, date, details, stack }) => (
   <div className="mb-8 relative">
-    <div className="absolute -left-10 mt-1 w-4 h-4 rounded-full bg-blue-500 border-4 border-white"></div>
+    <div className="absolute -left-10 mt-1 w-4 h-4 rounded-full bg-blue-500 border-4 border-white animate-pulse"></div>
     <h4 className="text-xl font-medium">{title}</h4>
     {subtitle && <p className="text-gray-600">{subtitle}</p>}
     <p className="text-gray-600">{date}</p>
@@ -42,7 +42,7 @@ const Skill = ({ name, level }) => {
 
   return (
     <span
-      className="px-3 py-1 rounded-full text-sm relative overflow-hidden group bg-blue-100 text-blue-800"
+      className="px-3 py-1 rounded-full text-sm relative overflow-hidden group bg-blue-100 text-blue-800 shadow-sm hover:shadow-md transition-shadow duration-300"
       style={{
         '--skill-color': getColor(level),
         '--skill-fill': getFillPercentage(level),
@@ -80,35 +80,39 @@ const App = () => {
     { name: 'Kubernetes', level: 1 },
   ];
 
+  const ContactItem = ({ icon, children }) => (
+    <div className="flex items-center hover:bg-indigo-700 p-2 rounded transition-colors duration-300">
+      {icon}
+      {children}
+    </div>
+  );
+
   return (
-    <div className="max-w-6xl mx-auto p-8 bg-gray-100 min-h-screen">
-      <header className="mb-8 text-center">
+    <div className="max-w-6xl mx-auto bg-gradient-to-b from-gray-100 to-white min-h-screen">
+      <header className="mb-8 text-center p-8 bg-gradient-to-r from-indigo-800 via-indigo-600 to-teal-500 text-white rounded-b-lg shadow-md">
         <h1 className="text-4xl font-bold mb-2">Mohamed Elwan</h1>
-        <h2 className="text-2xl text-gray-600 mb-4">C# Software Developer</h2>
+        <h2 className="text-2xl text-gray-200 mb-4">C# Software Developer</h2>
         <div className="flex flex-wrap justify-center gap-4">
-          <div className="flex items-center">
-            <Mail className="w-4 h-4 mr-2" />
-            <a href="mailto:mohamed.elwan.7@gmail.com" className="text-blue-600 hover:underline">
+          <ContactItem icon={<Mail className="w-4 h-4 mr-2" />}>
+            <a href="mailto:mohamed.elwan.7@gmail.com" className="text-gray-200 hover:text-white hover:underline">
               mohamed.elwan.7@gmail.com
             </a>
-          </div>
-          <div className="flex items-center">
-            <MapPin className="w-4 h-4 mr-2" />
+          </ContactItem>
+          <ContactItem icon={<MapPin className="w-4 h-4 mr-2" />}>
             <span>Bergisch Gladbach, Germany</span>
-          </div>
-          <div className="flex items-center">
-            <Phone className="w-4 h-4 mr-2" />
+          </ContactItem>
+          <ContactItem icon={<Phone className="w-4 h-4 mr-2" />}>
             <span>+49 176 37110701</span>
-          </div>
+          </ContactItem>
         </div>
         <div className="flex justify-center space-x-4 mt-4">
-          <a href="https://github.com/3lwan" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900">
+          <a href="https://github.com/3lwan" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white">
             <Github className="w-6 h-6" />
           </a>
-          <a href="https://www.linkedin.com/in/mohamed-elwan/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900">
+          <a href="https://www.linkedin.com/in/mohamed-elwan/" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white">
             <Linkedin className="w-6 h-6" />
           </a>
-          <a href="https://www.xing.com/profile/Mohamed_Elwan2/cv" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900">
+          <a href="https://www.xing.com/profile/Mohamed_Elwan2/cv" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white">
             <FontAwesomeIcon icon={faXing} className="w-6 h-6" />
           </a>
         </div>

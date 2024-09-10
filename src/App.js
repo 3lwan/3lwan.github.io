@@ -68,7 +68,7 @@ const App = () => {
   const skills = [
     { name: '.NET C#', level: 5 },
     { name: 'Rest APIs', level: 5 },
-    { name: 'Git/Gitlab', level: 5 },
+    { name: 'Git', level: 5 },
     { name: 'Microservices', level: 4 },
     { name: 'Blazor', level: 4 },
     { name: 'Docker', level: 4 },

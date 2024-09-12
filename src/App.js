@@ -218,6 +218,12 @@ const App = () => {
     return dateB - dateA;
   });
 
+  const languages = [
+    { language: "Arabic", level: "Native" },
+    { language: "English", level: "C1" },
+    { language: "German", level: "B2" },
+  ];
+
   return (
     <div className="App">
       <header className="header text-center p-6 bg-gradient-to-r from-indigo-800 via-indigo-600 to-teal-500 text-white rounded-lg shadow-md">
@@ -261,10 +267,12 @@ const App = () => {
           <div className="md:w-1/3">
             <section className="mb-8">
               <h3 className="text-2xl font-semibold mb-4">Languages</h3>
-              <div>
-                <LanguageItem language="Arabic" level="Native" />
-                <LanguageItem language="English" level="C1" />
-                <LanguageItem language="German" level="B2" />
+              <div className="grid grid-cols-2 gap-4">
+                {languages.map((lang) => (
+                  <div key={lang.language}>
+                    <LanguageItem language={lang.language} level={lang.level} />
+                  </div>
+                ))}
               </div>
             </section>
           </div>

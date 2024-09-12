@@ -150,7 +150,7 @@ const App = () => {
     },
     {
       company: "Conze Informatik",
-      title: "Software Architect / Team Leader",
+      title: "Team Leader",
       date: "Mar, 2019 – Jul, 2020",
       details: [
         "Guiding and supporting team development",

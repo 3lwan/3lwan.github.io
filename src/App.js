@@ -105,6 +105,7 @@ const LanguageItem = ({ language, level }) => (
 const App = () => {
   const skills = [
     { name: '.NET C#', level: 5 },
+    { name: 'xUnit', level: 5 },
     { name: 'Rest APIs', level: 5 },
     { name: 'Git', level: 5 },
     { name: 'Microservices', level: 4 },

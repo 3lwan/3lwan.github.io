@@ -17,26 +17,39 @@ const TimelineItem = ({ title, subtitle, company, date, details, stack, type }) 
         {type === 'experience' ? <Briefcase size={20} /> : <GraduationCap size={20} />}
       </div>
       <span className="timeline-date">{date}</span>
-      <div className="timeline-content">
-        {type === 'experience' && isHovered ? (
-          <div className="stack-content">
-            <h4 className="text-xl font-bold mb-2">Main Stack</h4>
-            <p>{stack || 'Not specified'}</p>
-          </div>
-        ) : (
-          <>
+      <div className="timeline-content" style={{ position: 'relative', height: '100%' }}>
+        <div style={{
+          opacity: type === 'experience' && isHovered ? 0 : 1,
+          visibility: type === 'experience' && isHovered ? 'hidden' : 'visible',
+          transition: 'opacity 0.3s, visibility 0.3s',
+        }}>
+          {company && <h4 className="text-xl font-bold mb-2">{company}</h4>}
+          <h4 className="text-xl font-bold mb-2">{title}</h4>
+          {subtitle && <p className="text-lg font-medium mb-2">{subtitle}</p>}
+          {details && (
+            <ul className="list-disc pl-5 mt-2">
+              {details.map((detail, i) => (
+                <li key={i}>{detail}</li>
+              ))}
+            </ul>
+          )}
+          {type === 'education' && stack && <p className="mt-2"><strong>Main Stack:</strong> {stack}</p>}
+        </div>
+        {type === 'experience' && (
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            opacity: isHovered ? 1 : 0,
+            visibility: isHovered ? 'visible' : 'hidden',
+            transition: 'opacity 0.3s, visibility 0.3s',
+          }}>
             {company && <h4 className="text-xl font-bold mb-2">{company}</h4>}
             <h4 className="text-xl font-bold mb-2">{title}</h4>
-            {subtitle && <p className="text-lg font-medium mb-2">{subtitle}</p>}
-            {details && (
-              <ul className="list-disc pl-5 mt-2">
-                {details.map((detail, i) => (
-                  <li key={i}>{detail}</li>
-                ))}
-              </ul>
-            )}
-            {type === 'education' && stack && <p className="mt-2"><strong>Main Stack:</strong> {stack}</p>}
-          </>
+            <h5 className="text-lg font-semibold mb-1">Main Stack</h5>
+            <p>{stack || ''}</p>
+          </div>
         )}
       </div>
     </div>

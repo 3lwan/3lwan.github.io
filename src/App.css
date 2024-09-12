@@ -120,14 +120,14 @@ html {
 }
 
 .timeline-item {
-  flex: 0 0 auto;
-  width: 300px;
-  margin-right: 20px;
+  position: relative;
+  padding-top: 30px;
+  width: 360px;
+  margin-right: 30px;
   background: white;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  position: relative;
   margin-top: 30px;
   /* Add space above the item for the date */
 }
@@ -140,38 +140,49 @@ html {
   border-top: 5px solid #e94e77;
 }
 
-.timeline-content {
-  padding-top: 5px;
-  /* Reduced top padding */
-}
-
-.timeline-item::before {
-  content: '';
+.timeline-icon {
   position: absolute;
   left: 50%;
-  top: -12px;
-  width: 20px;
-  height: 20px;
+  top: -20px;
+  width: 40px;
+  height: 40px;
   background: white;
   border: 5px solid;
   border-radius: 50%;
   transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
 }
 
-.timeline-item.experience::before {
+.timeline-icon i {
+  font-size: 20px;
+}
+
+.timeline-item.experience .timeline-icon {
   border-color: #4a90e2;
 }
 
-.timeline-item.education::before {
+.timeline-item.experience .timeline-icon svg {
+  color: #4a90e2;
+}
+
+.timeline-item.education .timeline-icon {
   border-color: #e94e77;
+}
+
+.timeline-item.education .timeline-icon svg {
+  color: #e94e77;
 }
 
 /* Update this style for the date */
 .timeline-date {
   position: absolute;
-  top: -35px;
+  top: -45px;
+  /* Move the date higher above the icon */
   left: 0;
-  font-size: 1.1em;
+  font-size: 0.9em;
   font-weight: 600;
   color: #333;
   width: 100%;
@@ -181,7 +192,8 @@ html {
 /* Add some responsive styles */
 @media (max-width: 768px) {
   .timeline-item {
-    width: 250px;
+    width: 320px;
+    /* Adjust for smaller screens if needed */
   }
 
   .App {

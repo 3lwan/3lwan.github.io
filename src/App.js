@@ -1,11 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Github, Linkedin, Mail, MapPin, Phone } from 'lucide-react';
+import { Github, Linkedin, Mail, MapPin, Phone, Briefcase, GraduationCap } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXing } from '@fortawesome/free-brands-svg-icons';
 import './App.css';
 
 const TimelineItem = ({ title, subtitle, company, date, details, stack, type }) => (
   <div className={`timeline-item ${type}`}>
+    <div className="timeline-icon">
+      {type === 'experience' ? <Briefcase size={20} /> : <GraduationCap size={20} />}
+    </div>
     <span className="timeline-date">{date}</span>
     <div className="timeline-content">
       {company && <h4 className="text-xl font-bold mb-2">{company}</h4>}

@@ -216,7 +216,7 @@ const App = () => {
 
   return (
     <div className="App">
-      <header className="header mb-8 text-center p-8 bg-gradient-to-r from-indigo-800 via-indigo-600 to-teal-500 text-white rounded-b-lg shadow-md">
+      <header className="header text-center p-6 bg-gradient-to-r from-indigo-800 via-indigo-600 to-teal-500 text-white rounded-lg shadow-md">
         <h1 className="text-4xl font-bold mb-2">Mohamed Elwan</h1>
         <h2 className="text-2xl text-gray-200 mb-4">C# Software Developer</h2>
         <div className="flex flex-wrap justify-center gap-4">
@@ -245,7 +245,7 @@ const App = () => {
         </div>
       </header>
 
-      <main className="main-content px-4">
+      <main className="main-content">
         <h3 className="text-2xl font-semibold mb-4">Experience & Education</h3>
         <div className="timeline-container">
           {timelineItems.map((item, index) => (

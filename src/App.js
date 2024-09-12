@@ -16,8 +16,8 @@ const TimelineItem = ({ title, subtitle, company, date, details, stack, type }) 
       <div className="timeline-icon">
         {type === 'experience' ? <Briefcase size={20} /> : <GraduationCap size={20} />}
       </div>
-      <span className="timeline-date">{date}</span>
       <div className="timeline-content">
+        <span className="timeline-date">{date}</span>
         {company && <h4 className="text-xl font-bold mb-2">{company}</h4>}
         <h4 className="text-xl font-bold mb-2">{title}</h4>
         {subtitle && <p className="text-lg font-medium mb-2">{subtitle}</p>}

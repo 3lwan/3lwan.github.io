@@ -71,7 +71,7 @@ const LanguageItem = ({ language, level }) => (
   </div>
 );
 
-const ExperienceCard = ({ company, logo, title, date, details, stack }) => {
+const ExperienceCard = ({ company, title, date, details, stack }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [cardHeight, setCardHeight] = useState('auto');
   const frontRef = useRef(null);
@@ -94,7 +94,6 @@ const ExperienceCard = ({ company, logo, title, date, details, stack }) => {
           {!isFlipped ? (
             <div className="bg-white rounded-lg shadow-md p-6 h-full">
               <div className="flex items-center mb-4">
-                <img src={logo} alt={`${company} logo`} className="w-12 h-12 mr-4 rounded-full" />
                 <div>
                   <h4 className="text-xl font-semibold">{company}</h4>
                   <p className="text-gray-600">{title}</p>
@@ -145,7 +144,6 @@ const App = () => {
   const experiences = [
     {
       company: "Flaschenpost",
-      logo: "path_to_flaschenpost_logo.png", // Replace with actual logo path
       title: "FullStack Developer",
       date: "Jun, 2022 – Sept, 2024",
       details: [
@@ -159,7 +157,6 @@ const App = () => {
     },
     {
       company: "INVERS",
-      logo: "path_to_invers_logo.png", // Replace with actual logo path
       title: "Backend Developer",
       date: "Jul, 2020 – Jun, 2022",
       details: ["Maintaining existing microservices and creating new ones."],
@@ -167,7 +164,6 @@ const App = () => {
     },
     {
       company: "Conze Informatik",
-      logo: "path_to_conze_logo.png", // Replace with actual logo path
       title: "Software Architect / Team Leader",
       date: "Mar, 2019 – Jul, 2020",
       details: [
@@ -182,7 +178,6 @@ const App = () => {
     },
     {
       company: "Conze Informatik",
-      logo: "path_to_conze_logo.png", // Replace with actual logo path
       title: "Software Developer",
       date: "Nov, 2017 – Mar, 2019",
       details: [".Net Software Developer using C++, C# and XAML for desktop applications using WPF."],

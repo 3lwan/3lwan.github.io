@@ -67,58 +67,6 @@ html {
   border: 3px solid #f0f0f0;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.perspective {
-  perspective: 1000px;
-}
-
-.preserve-3d {
-  transform-style: preserve-3d;
-}
-
-.backface-hidden {
-  backface-visibility: hidden;
-}
-
-.rotate-y-180 {
-  transform: rotateY(180deg);
-}
-
 .timeline-item {
   position: relative;
   padding-top: 30px;
@@ -129,7 +77,6 @@ html {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 20px;
   margin-top: 30px;
-  /* Add space above the item for the date */
 }
 
 .timeline-item.experience {
@@ -156,10 +103,6 @@ html {
   z-index: 1;
 }
 
-.timeline-icon i {
-  font-size: 20px;
-}
-
 .timeline-item.experience .timeline-icon {
   border-color: #4a90e2;
 }
@@ -176,11 +119,9 @@ html {
   color: #e94e77;
 }
 
-/* Update this style for the date */
 .timeline-date {
   position: absolute;
   top: -45px;
-  /* Move the date higher above the icon */
   left: 0;
   font-size: 0.9em;
   font-weight: 600;
@@ -189,11 +130,9 @@ html {
   text-align: center;
 }
 
-/* Add some responsive styles */
 @media (max-width: 768px) {
   .timeline-item {
     width: 320px;
-    /* Adjust for smaller screens if needed */
   }
 
   .App {

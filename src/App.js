@@ -17,39 +17,50 @@ const TimelineItem = ({ title, subtitle, company, date, details, stack, type }) 
         {type === 'experience' ? <Briefcase size={20} /> : <GraduationCap size={20} />}
       </div>
       <span className="timeline-date">{date}</span>
-      <div className="timeline-content" style={{ position: 'relative', height: '100%' }}>
-        <div style={{
-          opacity: type === 'experience' && isHovered ? 0 : 1,
-          visibility: type === 'experience' && isHovered ? 'hidden' : 'visible',
-          transition: 'opacity 0.3s, visibility 0.3s',
-        }}>
-          {company && <h4 className="text-xl font-bold mb-2">{company}</h4>}
-          <h4 className="text-xl font-bold mb-2">{title}</h4>
-          {subtitle && <p className="text-lg font-medium mb-2">{subtitle}</p>}
-          {details && (
-            <ul className="list-disc pl-5 mt-2">
-              {details.map((detail, i) => (
-                <li key={i}>{detail}</li>
-              ))}
-            </ul>
-          )}
-          {type === 'education' && stack && <p className="mt-2"><strong>Main Stack:</strong> {stack}</p>}
-        </div>
+      <div className="timeline-content">
+        {company && <h4 className="text-xl font-bold mb-2">{company}</h4>}
+        <h4 className="text-xl font-bold mb-2">{title}</h4>
+        {subtitle && <p className="text-lg font-medium mb-2">{subtitle}</p>}
         {type === 'experience' && (
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            opacity: isHovered ? 1 : 0,
-            visibility: isHovered ? 'visible' : 'hidden',
-            transition: 'opacity 0.3s, visibility 0.3s',
-          }}>
-            {company && <h4 className="text-xl font-bold mb-2">{company}</h4>}
-            <h4 className="text-xl font-bold mb-2">{title}</h4>
-            <h5 className="text-lg font-semibold mb-1">Main Stack</h5>
-            <p>{stack || ''}</p>
+          <div className="relative">
+            <div style={{
+              opacity: isHovered ? 0 : 1,
+              visibility: isHovered ? 'hidden' : 'visible',
+              transition: 'opacity 0.3s, visibility 0.3s',
+            }}>
+              {details && (
+                <ul className="list-disc pl-5 mt-2">
+                  {details.map((detail, i) => (
+                    <li key={i}>{detail}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              opacity: isHovered ? 1 : 0,
+              visibility: isHovered ? 'visible' : 'hidden',
+              transition: 'opacity 0.3s, visibility 0.3s',
+            }}>
+              <h5 className="text-lg font-semibold mb-1">Main Stack</h5>
+              <p>{stack || ''}</p>
+            </div>
           </div>
+        )}
+        {type === 'education' && (
+          <>
+            {details && (
+              <ul className="list-disc pl-5 mt-2">
+                {details.map((detail, i) => (
+                  <li key={i}>{detail}</li>
+                ))}
+              </ul>
+            )}
+            {stack && <p className="mt-2"><strong>Main Stack:</strong> {stack}</p>}
+          </>
         )}
       </div>
     </div>
@@ -58,22 +69,8 @@ const TimelineItem = ({ title, subtitle, company, date, details, stack, type }) 
 
 const Skill = ({ name, level }) => {
   const getColor = (level) => {
-    switch (level) {
-      case 5: return 'rgb(0, 128, 0)'; // dark green
-      case 4: return 'rgb(0, 128, 0)'; // dark green
-      case 3: return 'rgb(204, 204, 0)'; // dark yellow
-      case 2: return 'rgb(255, 140, 0)'; // dark orange
-      case 1: return 'rgb(204, 0, 0)'; // dark red
-      default: return 'rgb(0, 0, 255)'; // dark blue
-    }
-  };
-
-  const getFillPercentage = (level) => {
-    return `${(level / 5) * 100}%`;
-  };
-
-  const getTextColor = (level) => {
-    return level > 3 ? 'white' : 'black';
+    const colors = ['rgb(204, 0, 0)', 'rgb(255, 140, 0)', 'rgb(204, 204, 0)', 'rgb(0, 128, 0)', 'rgb(0, 128, 0)'];
+    return colors[level - 1] || 'rgb(0, 0, 255)';
   };
 
   return (
@@ -81,13 +78,11 @@ const Skill = ({ name, level }) => {
       className="px-3 py-1 rounded-full text-sm relative overflow-hidden group bg-blue-100 text-blue-800 shadow-sm hover:shadow-md transition-shadow duration-300"
       style={{
         '--skill-color': getColor(level),
-        '--skill-fill': getFillPercentage(level),
-        '--skill-text-color': getTextColor(level),
+        '--skill-fill': `${(level / 5) * 100}%`,
+        '--skill-text-color': level > 3 ? 'white' : 'black',
       }}
     >
-      <span
-        className="relative z-10 transition-colors duration-300 group-hover:text-[var(--skill-text-color)]"
-      >
+      <span className="relative z-10 transition-colors duration-300 group-hover:text-[var(--skill-text-color)]">
         {name}
       </span>
       <span
@@ -106,53 +101,6 @@ const LanguageItem = ({ language, level }) => (
     <span className="text-sm px-2 py-1 bg-blue-500 text-white rounded-full">{level}</span>
   </div>
 );
-
-const ExperienceCard = ({ company, title, date, details, stack }) => {
-  const [isFlipped, setIsFlipped] = useState(false);
-  const [cardHeight, setCardHeight] = useState('auto');
-  const frontRef = useRef(null);
-
-  useEffect(() => {
-    if (frontRef.current) {
-      setCardHeight(frontRef.current.offsetHeight);
-    }
-  }, []);
-
-  return (
-    <div
-      className="mb-6 relative perspective"
-      onMouseEnter={() => setIsFlipped(true)}
-      onMouseLeave={() => setIsFlipped(false)}
-      style={{ height: cardHeight }}
-    >
-      <div className={`flex-shrink-0 flex-grow-0 h-full relative w-full transition-transform duration-500 preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
-        <div className="w-full h-full backface-hidden" ref={frontRef}>
-          {!isFlipped ? (
-            <div className="bg-white rounded-lg shadow-md p-6 h-full">
-              <div className="flex items-center mb-4">
-                <div>
-                  <h4 className="text-xl font-semibold">{company}</h4>
-                  <p className="text-gray-600">{title}</p>
-                </div>
-              </div>
-              <p className="text-gray-600 mb-2">{date}</p>
-              <ul className="list-disc pl-5 mb-2">
-                {details.map((detail, index) => (
-                  <li key={index} className="text-gray-700">{detail}</li>
-                ))}
-              </ul>
-            </div>
-          ) : (
-            <div className="bg-blue-100 rounded-lg shadow-md p-6 h-full flex flex-col justify-center items-center">
-              <h4 className="text-xl font-semibold mb-4">Main Stack</h4>
-              <p className="text-center">{stack}</p>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
 
 const App = () => {
   const skills = [
@@ -288,9 +236,9 @@ const App = () => {
       <main className="main-content">
         <h3 className="text-2xl font-semibold mb-4">Experience & Education</h3>
         <div className="timeline-container">
-          {timelineItems.map((item, index) => {
-            return <TimelineItem key={index} {...item} />;
-          })}
+          {timelineItems.map((item, index) => (
+            <TimelineItem key={index} {...item} />
+          ))}
         </div>
 
         <div className="flex flex-col md:flex-row gap-8 px-8 mt-8">
@@ -299,9 +247,7 @@ const App = () => {
               <h3 className="text-2xl font-semibold mb-4">Languages</h3>
               <div className="grid grid-cols-2 gap-4">
                 {languages.map((lang) => (
-                  <div key={lang.language}>
-                    <LanguageItem language={lang.language} level={lang.level} />
-                  </div>
+                  <LanguageItem key={lang.language} {...lang} />
                 ))}
               </div>
             </section>
@@ -311,7 +257,7 @@ const App = () => {
             <h3 className="text-2xl font-semibold mb-4">Skills</h3>
             <div className="flex flex-wrap gap-2">
               {skills.map((skill) => (
-                <Skill key={skill.name} name={skill.name} level={skill.level} />
+                <Skill key={skill.name} {...skill} />
               ))}
             </div>
           </section>

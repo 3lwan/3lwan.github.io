@@ -4,12 +4,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXing } from '@fortawesome/free-brands-svg-icons';
 import './App.css';
 
-const TimelineItem = ({ title, subtitle, date, details, stack, type }) => (
+const TimelineItem = ({ title, subtitle, company, date, details, stack, type }) => (
   <div className={`timeline-item ${type}`}>
+    <span className="timeline-date">{date}</span>
     <div className="timeline-content">
-      <h4 className="text-xl font-medium">{title}</h4>
-      {subtitle && <p className="text-gray-600">{subtitle}</p>}
-      <p className="text-gray-600">{date}</p>
+      {company && <h4 className="text-xl font-bold mb-2">{company}</h4>}
+      <h4 className="text-xl font-bold mb-2">{title}</h4>
+      {subtitle && <p className="text-lg font-medium mb-2">{subtitle}</p>}
       {details && (
         <ul className="list-disc pl-5 mt-2">
           {details.map((detail, i) => (
@@ -145,8 +146,8 @@ const App = () => {
 
   const experiences = [
     {
-      company: "Flaschenpost",
-      title: "FullStack Developer",
+      company: "Flaschenpost", // Company name
+      title: "FullStack Developer", // Job title
       date: "Jun, 2022 – Sept, 2024",
       details: [
         "Maintain/improve the B2B Webshop",
@@ -193,8 +194,8 @@ const App = () => {
 
   const education = [
     {
-      title: "M.Sc. in Mechatronics Engineering",
-      subtitle: "Universität Siegen",
+      title: "M.Sc. in Mechatronics Engineering", // Degree
+      subtitle: "Universität Siegen", // University name
       date: "2014 – 2017",
       details: ["Final grade: 1.1"],
       type: "education",
@@ -248,9 +249,10 @@ const App = () => {
       <main className="main-content">
         <h3 className="text-2xl font-semibold mb-4">Experience & Education</h3>
         <div className="timeline-container">
-          {timelineItems.map((item, index) => (
-            <TimelineItem key={index} {...item} />
-          ))}
+          {timelineItems.map((item, index) => {
+            console.log('Rendering timeline item:', item);
+            return <TimelineItem key={index} {...item} />;
+          })}
         </div>
 
         <div className="flex flex-col md:flex-row gap-8 px-8 mt-8">

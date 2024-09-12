@@ -23,11 +23,12 @@ const TimelineItem = ({ title, subtitle, company, date, details, stack, type }) 
         {subtitle && <p className="text-lg font-medium mb-2">{subtitle}</p>}
         {type === 'experience' && (
           <div className="relative">
-            <div style={{
-              opacity: isHovered ? 0 : 1,
-              visibility: isHovered ? 'hidden' : 'visible',
-              transition: 'opacity 0.3s, visibility 0.3s',
-            }}>
+            <div
+              style={{
+                opacity: isHovered ? 0 : 1,
+                transition: 'opacity 0.3s ease-in-out',
+              }}
+            >
               {details && (
                 <ul className="list-disc pl-5 mt-2">
                   {details.map((detail, i) => (
@@ -36,15 +37,17 @@ const TimelineItem = ({ title, subtitle, company, date, details, stack, type }) 
                 </ul>
               )}
             </div>
-            <div style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              opacity: isHovered ? 1 : 0,
-              visibility: isHovered ? 'visible' : 'hidden',
-              transition: 'opacity 0.3s, visibility 0.3s',
-            }}>
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                opacity: isHovered ? 1 : 0,
+                transition: 'opacity 0.3s ease-in-out',
+                pointerEvents: isHovered ? 'auto' : 'none',
+              }}
+            >
               <h5 className="text-lg font-semibold mb-1">Main Stack</h5>
               <p>{stack || ''}</p>
             </div>

@@ -1,5 +1,55 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+}
+
 .App {
-  text-align: center;
+  min-height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  flex-shrink: 0;
+}
+
+.main-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.timeline-container {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  padding: 20px 0;
+  width: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: #4a90e2 #f0f0f0;
+}
+
+.timeline-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.timeline-container::-webkit-scrollbar-track {
+  background: #f0f0f0;
+}
+
+.timeline-container::-webkit-scrollbar-thumb {
+  background-color: #4a90e2;
+  border-radius: 20px;
+  border: 3px solid #f0f0f0;
 }
 
 .App-logo {
@@ -52,4 +102,55 @@
 
 .rotate-y-180 {
   transform: rotateY(180deg);
+}
+
+.timeline-item {
+  flex: 0 0 auto;
+  width: 300px;
+  margin-right: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  position: relative;
+}
+
+.timeline-item.experience {
+  border-left: 5px solid #4a90e2;
+}
+
+.timeline-item.education {
+  border-left: 5px solid #e94e77;
+}
+
+.timeline-content {
+  padding-left: 10px;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border: 5px solid;
+  border-radius: 50%;
+  transform: translateY(-50%);
+}
+
+.timeline-item.experience::before {
+  border-color: #4a90e2;
+}
+
+.timeline-item.education::before {
+  border-color: #e94e77;
+}
+
+/* Add some responsive styles */
+@media (max-width: 768px) {
+  .timeline-item {
+    width: 250px;
+  }
 }

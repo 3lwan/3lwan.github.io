@@ -2,21 +2,23 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Github, Linkedin, Mail, MapPin, Phone } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXing } from '@fortawesome/free-brands-svg-icons';
+import './App.css';
 
-const TimelineItem = ({ title, subtitle, date, details, stack }) => (
-  <div className="mb-8 relative">
-    <div className="absolute -left-10 mt-1 w-4 h-4 rounded-full bg-blue-500 border-4 border-white animate-pulse"></div>
-    <h4 className="text-xl font-medium">{title}</h4>
-    {subtitle && <p className="text-gray-600">{subtitle}</p>}
-    <p className="text-gray-600">{date}</p>
-    {details && (
-      <ul className="list-disc pl-5 mt-2">
-        {details.map((detail, i) => (
-          <li key={i}>{detail}</li>
-        ))}
-      </ul>
-    )}
-    {stack && <p className="mt-2"><strong>Main Stack:</strong> {stack}</p>}
+const TimelineItem = ({ title, subtitle, date, details, stack, type }) => (
+  <div className={`timeline-item ${type}`}>
+    <div className="timeline-content">
+      <h4 className="text-xl font-medium">{title}</h4>
+      {subtitle && <p className="text-gray-600">{subtitle}</p>}
+      <p className="text-gray-600">{date}</p>
+      {details && (
+        <ul className="list-disc pl-5 mt-2">
+          {details.map((detail, i) => (
+            <li key={i}>{detail}</li>
+          ))}
+        </ul>
+      )}
+      {stack && <p className="mt-2"><strong>Main Stack:</strong> {stack}</p>}
+    </div>
   </div>
 );
 
@@ -154,6 +156,7 @@ const App = () => {
         "Design/Architect team's different projects",
       ],
       stack: ".NET, Blazor, HTML, CSS, Javascript, SQL, Azure, Kubernetes",
+      type: "experience",
     },
     {
       company: "INVERS",
@@ -161,6 +164,7 @@ const App = () => {
       date: "Jul, 2020 – Jun, 2022",
       details: ["Maintaining existing microservices and creating new ones."],
       stack: ".Net(C#), Docker, Kubernetes/Helm, Gitlab and MongoDB.",
+      type: "experience",
     },
     {
       company: "Conze Informatik",
@@ -175,6 +179,7 @@ const App = () => {
         "Effort estimation for tasks",
       ],
       stack: ".NET, C#, WPF, XAML",
+      type: "experience",
     },
     {
       company: "Conze Informatik",
@@ -182,12 +187,36 @@ const App = () => {
       date: "Nov, 2017 – Mar, 2019",
       details: [".Net Software Developer using C++, C# and XAML for desktop applications using WPF."],
       stack: ".NET, C++, C#, WPF, XAML",
+      type: "experience",
     },
   ];
 
+  const education = [
+    {
+      title: "M.Sc. in Mechatronics Engineering",
+      subtitle: "Universität Siegen",
+      date: "2014 – 2017",
+      details: ["Final grade: 1.1"],
+      type: "education",
+    },
+    {
+      title: "B.Sc. in Engineering and Material Science",
+      subtitle: "German University in Cairo",
+      date: "2007 – 2012",
+      details: ["Final grade: Excellent"],
+      type: "education",
+    },
+  ];
+
+  const timelineItems = [...experiences, ...education].sort((a, b) => {
+    const dateA = new Date(a.date.split(' – ')[1] || a.date.split(' – ')[0]);
+    const dateB = new Date(b.date.split(' – ')[1] || b.date.split(' – ')[0]);
+    return dateB - dateA;
+  });
+
   return (
-    <div className="max-w-6xl mx-auto bg-gradient-to-b from-gray-100 to-white min-h-screen">
-      <header className="mb-8 text-center p-8 bg-gradient-to-r from-indigo-800 via-indigo-600 to-teal-500 text-white rounded-b-lg shadow-md">
+    <div className="App">
+      <header className="header mb-8 text-center p-8 bg-gradient-to-r from-indigo-800 via-indigo-600 to-teal-500 text-white rounded-b-lg shadow-md">
         <h1 className="text-4xl font-bold mb-2">Mohamed Elwan</h1>
         <h2 className="text-2xl text-gray-200 mb-4">C# Software Developer</h2>
         <div className="flex flex-wrap justify-center gap-4">
@@ -216,52 +245,36 @@ const App = () => {
         </div>
       </header>
 
-      <div className="flex flex-col md:flex-row gap-8 px-8">
-        <section className="mb-8 md:w-1/2 flex flex-col items-stretch">
-          <h3 className="text-2xl font-semibold mb-6">Professional Experience</h3>
-          {experiences.map((exp, index) => (
-            <ExperienceCard key={index} {...exp} />
+      <main className="main-content px-4">
+        <h3 className="text-2xl font-semibold mb-4">Experience & Education</h3>
+        <div className="timeline-container">
+          {timelineItems.map((item, index) => (
+            <TimelineItem key={index} {...item} />
           ))}
-        </section>
+        </div>
 
-        <div className="md:w-1/3">
-          <section className="mb-8">
-            <h3 className="text-2xl font-semibold mb-4">Education</h3>
-            <div className="relative border-l-2 border-gray-300 pl-8 ml-4">
-              <TimelineItem
-                title="M.Sc. in Mechatronics Engineering"
-                subtitle="Universität Siegen"
-                date="2014 – 2017"
-                details={["Final grade: 1.1"]}
-              />
-              <TimelineItem
-                title="B.Sc. in Engineering and Material Science"
-                subtitle="German University in Cairo"
-                date="2007 – 2012"
-                details={["Final grade: Excellent"]}
-              />
-            </div>
-          </section>
+        <div className="flex flex-col md:flex-row gap-8 px-8 mt-8">
+          <div className="md:w-1/3">
+            <section className="mb-8">
+              <h3 className="text-2xl font-semibold mb-4">Languages</h3>
+              <div>
+                <LanguageItem language="Arabic" level="Native" />
+                <LanguageItem language="English" level="C1" />
+                <LanguageItem language="German" level="B2" />
+              </div>
+            </section>
+          </div>
 
-          <section className="mb-8">
-            <h3 className="text-2xl font-semibold mb-4">Languages</h3>
-            <div>
-              <LanguageItem language="Arabic" level="Native" />
-              <LanguageItem language="English" level="C1" />
-              <LanguageItem language="German" level="B2" />
+          <section className="mb-8 md:w-2/3">
+            <h3 className="text-2xl font-semibold mb-4">Skills</h3>
+            <div className="flex flex-wrap gap-2">
+              {skills.map((skill) => (
+                <Skill key={skill.name} name={skill.name} level={skill.level} />
+              ))}
             </div>
           </section>
         </div>
-
-        <section className="mb-8 md:w-1/7">
-          <h3 className="text-2xl font-semibold mb-4">Skills</h3>
-          <div className="flex flex-col gap-2">
-            {skills.map((skill) => (
-              <Skill key={skill.name} name={skill.name} level={skill.level} />
-            ))}
-          </div>
-        </section>
-      </div>
+      </main>
     </div>
   );
 };

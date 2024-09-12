@@ -250,7 +250,6 @@ const App = () => {
         <h3 className="text-2xl font-semibold mb-4">Experience & Education</h3>
         <div className="timeline-container">
           {timelineItems.map((item, index) => {
-            console.log('Rendering timeline item:', item);
             return <TimelineItem key={index} {...item} />;
           })}
         </div>

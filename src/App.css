@@ -339,7 +339,8 @@
   font-family: var(--body);
   font-weight: 500;
   font-size: clamp(1rem, 1.7vw, 1.2rem);
-  color: rgba(246, 239, 234, 0.94);
+  color: rgba(246, 239, 234, 0.96);
+  text-shadow: 0 1px 10px rgba(8, 4, 10, 0.8);
 }
 
 .copy ul {
@@ -357,7 +358,10 @@
   padding-left: 18px;
   font-size: 0.95rem;
   line-height: 1.45;
-  color: rgba(246, 239, 234, 0.8);
+  color: rgba(246, 239, 234, 0.92);
+  /* the copy sits over illustration, not flat colour, so it carries its own
+     contrast rather than relying on the scene behind it */
+  text-shadow: 0 1px 10px rgba(8, 4, 10, 0.8);
 }
 
 .copy li::before {
@@ -369,8 +373,10 @@
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: currentColor;
-  opacity: 0.75;
+  /* not currentColor: the marker should not inherit the text's transparency */
+  background: #f6efea;
+  opacity: 0.95;
+  box-shadow: 0 1px 6px rgba(8, 4, 10, 0.7);
 }
 
 .chips {

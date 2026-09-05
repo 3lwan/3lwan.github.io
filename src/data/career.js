@@ -3,10 +3,6 @@
  *
  * Content is lifted from the pre-redesign App.jsx, plus Eurowings Digital,
  * which that file never had - the old CV stopped at Flaschenpost (Sept 2024).
- *
- * `stack` entries are always objects. `level` (1-5) is optional and drives the
- * hover fill on SkillChip; it is only set where a level is actually known,
- * rather than inventing one to make the chips look uniform.
  */
 
 export const profile = {
@@ -22,6 +18,58 @@ export const profile = {
   },
 };
 
+/**
+ * Every technology named anywhere on the CV, with its display name and its
+ * proficiency (1-5, which drives the hover fill on SkillChip).
+ *
+ * Jobs and the skills section both resolve their chips through pick(), so a
+ * technology cannot end up spelled or rated two different ways: ".NET" is one
+ * entry, not the four spellings ("C# / .NET", ".NET / C#", "C#", ".NET C#")
+ * this file used to carry.
+ */
+const SKILLS = {
+  DotNet: { name: '.NET', level: 5 },
+  xUnit: { name: 'xUnit', level: 5 },
+  REST: { name: 'REST APIs', level: 5 },
+  Git: { name: 'Git', level: 5 },
+  GitHub: { name: 'GitHub', level: 4 },
+  GitLab: { name: 'GitLab', level: 4 },
+  AI: { name: 'AI', level: 4 },
+  Microservices: { name: 'Microservices', level: 4 },
+  Blazor: { name: 'Blazor', level: 4 },
+  Docker: { name: 'Docker', level: 4 },
+  'HTML/CSS': { name: 'HTML / CSS', level: 4 },
+  WPF: { name: 'WPF', level: 4 },
+  XAML: { name: 'XAML', level: 4 },
+  Azure: { name: 'Azure', level: 3 },
+  SQL: { name: 'SQL', level: 3 },
+  JS: { name: 'JavaScript', level: 3 },
+  Spring: { name: 'Java Spring Boot', level: 3 },
+  gRPC: { name: 'gRPC', level: 3 },
+  MongoDB: { name: 'MongoDB', level: 3 },
+  Python: { name: 'Python', level: 2 },
+  Angular: { name: 'Angular', level: 2 },
+  Terraform: { name: 'Terraform', level: 2 },
+  'C++': { name: 'C++', level: 2 },
+  K8s: { name: 'Kubernetes', level: 1 },
+  Helm: { name: 'Helm', level: 1 },
+};
+
+/** Resolve registry keys into the { name, level } objects the chips render. */
+const pick = (...keys) =>
+  keys.map((key) => {
+    const skill = SKILLS[key];
+    if (!skill) throw new Error(`Unknown skill: ${key}`);
+    return skill;
+  });
+
+/**
+ * Chips that are not technologies - fields of study, spoken languages - carry
+ * no level: a proficiency fill would mean nothing there, and the languages
+ * already state Native/C1/B2 in their own section.
+ */
+const plainChips = (...names) => names.map((name) => ({ name }));
+
 /** Employers, newest first - the order the visitor scrolls through. */
 export const experiences = [
   {
@@ -36,16 +84,7 @@ export const experiences = [
       'Shape features with the team, so what ships genuinely helps travellers',
       'Track API health on dashboards to catch and resolve problems quickly',
     ],
-    stack: [
-      { name: 'C# / .NET' },
-      { name: 'Java Spring Boot', level: 3 },
-      { name: 'Azure' },
-      { name: 'GitHub' },
-      { name: 'Terraform', level: 2 },
-      { name: 'AI', level: 4 },
-      { name: 'REST' },
-      { name: 'gRPC', level: 3 },
-    ],
+    stack: pick('DotNet', 'Spring', 'Azure', 'GitHub', 'Terraform', 'AI', 'REST', 'gRPC'),
     palette: { primary: '#871C54', accent: '#AF1E65', secondary: '#00A6CE' },
   },
   {
@@ -61,7 +100,7 @@ export const experiences = [
       'Worked directly with business customers on ERP system integration',
       "Designed and architected the team's projects",
     ],
-    stack: ['.NET', 'Blazor', 'JavaScript', 'HTML / CSS', 'SQL', 'Azure', 'Kubernetes'].map((name) => ({ name })),
+    stack: pick('DotNet', 'Blazor', 'JS', 'HTML/CSS', 'SQL', 'Azure', 'K8s'),
     palette: { primary: '#A50A50', accent: '#82BE3C', secondary: '#5A9632' },
   },
   {
@@ -72,7 +111,7 @@ export const experiences = [
     period: 'Jul 2020 – Jun 2022',
     ticket: 'Stop 03 · INVERS · Jul 2020 – Jun 2022',
     details: ['Maintaining existing microservices and creating new ones.'],
-    stack: ['.NET / C#', 'Docker', 'Kubernetes / Helm', 'GitLab', 'MongoDB'].map((name) => ({ name })),
+    stack: pick('DotNet', 'Docker', 'K8s', 'Helm', 'GitLab', 'MongoDB'),
     palette: { primary: '#00469C', accent: '#00C8AA', secondary: '#A4A4A4' },
   },
   {
@@ -90,7 +129,7 @@ export const experiences = [
       'Technical contact for customers',
       'Effort estimation for tasks',
     ],
-    stack: ['.NET', 'C#', 'WPF', 'XAML'].map((name) => ({ name })),
+    stack: pick('DotNet', 'WPF', 'XAML'),
     palette: { primary: '#15779B', accent: '#333333', secondary: '#E6E6E6' },
   },
   {
@@ -102,7 +141,7 @@ export const experiences = [
     details: [
       '.NET software developer using C++, C# and XAML for desktop applications with WPF.',
     ],
-    stack: ['.NET', 'C++', 'C#', 'WPF', 'XAML'].map((name) => ({ name })),
+    stack: pick('DotNet', 'C++', 'WPF', 'XAML'),
     palette: { primary: '#15779B', accent: '#333333', secondary: '#E6E6E6' },
   },
 ];
@@ -128,26 +167,32 @@ export const languages = [
   { language: 'German', level: 'B2' },
 ];
 
-/** level is 1-5; drives the hover fill on SkillChip. */
-export const skills = [
-  { name: '.NET C#', level: 5 },
-  { name: 'xUnit', level: 5 },
-  { name: 'Rest APIs', level: 5 },
-  { name: 'Git', level: 5 },
-  { name: 'AI', level: 4 },
-  { name: 'Microservices', level: 4 },
-  { name: 'Blazor', level: 4 },
-  { name: 'Docker', level: 4 },
-  { name: 'Azure', level: 3 },
-  { name: 'SQL', level: 3 },
-  { name: 'Javascript', level: 3 },
-  { name: 'Java Spring Boot', level: 3 },
-  { name: 'gRPC', level: 3 },
-  { name: 'Python', level: 2 },
-  { name: 'Angular', level: 2 },
-  { name: 'Terraform', level: 2 },
-  { name: 'Kubernetes', level: 1 },
-];
+/**
+ * The skills section of the CV.
+ *
+ * Deliberately a subset of SKILLS: the registry also holds things that belong
+ * to one employer's story rather than to a general claim of proficiency
+ * (GitHub vs GitLab, Helm, WPF/XAML, C++, MongoDB).
+ */
+export const skills = pick(
+  'DotNet',
+  'xUnit',
+  'REST',
+  'Git',
+  'AI',
+  'Microservices',
+  'Blazor',
+  'Docker',
+  'Azure',
+  'SQL',
+  'JS',
+  'Spring',
+  'gRPC',
+  'Python',
+  'Angular',
+  'Terraform',
+  'K8s'
+);
 
 /**
  * The scenes of the scroll story, in scroll order.
@@ -186,7 +231,7 @@ export const storyScenes = [
     roles: [job('conze-lead'), job('conze-dev')],
     // both roles' technologies, de-duplicated, newest role first
     stack: [...job('conze-lead').stack, ...job('conze-dev').stack].filter(
-      (tech, index, all) => all.findIndex((other) => other.name === tech.name) === index
+      (tech, index, all) => all.indexOf(tech) === index
     ),
   },
   {
@@ -199,7 +244,7 @@ export const storyScenes = [
       period: `${item.school} · ${item.period}`,
       details: item.details,
     })),
-    stack: [{ name: 'Mechatronics' }, { name: 'Engineering' }, { name: 'Material Science' }],
+    stack: plainChips('Mechatronics', 'Engineering', 'Material Science'),
   },
   {
     id: 'languages',
@@ -212,7 +257,7 @@ export const storyScenes = [
         details: languages.map((entry) => `${entry.language} — ${entry.level}`),
       },
     ],
-    stack: languages.map((entry) => ({ name: entry.language })),
+    stack: plainChips(...languages.map((entry) => entry.language)),
   },
   {
     id: 'contact',

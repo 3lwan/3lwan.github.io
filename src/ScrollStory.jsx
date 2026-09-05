@@ -11,6 +11,15 @@ import { SkyWorld, CloudDeck, AirportHorizon } from './illustrations/SkyWorld';
 import { StreetSky, StreetHorizon } from './illustrations/StreetWorld';
 import { MobilitySky, MobilityHorizon } from './illustrations/MobilityWorld';
 import { ClinicSky, ClinicHorizon } from './illustrations/ClinicWorld';
+import { GearBench, SpeechBubbles, Signpost } from './illustrations/ClosingScenes';
+import {
+  BlueprintSky,
+  BlueprintHorizon,
+  LanguagesSky,
+  LanguagesHorizon,
+  ContactSky,
+  ContactHorizon,
+} from './illustrations/ClosingWorlds';
 import { Instruments } from './components/Instruments';
 import { ProgressRail } from './components/ProgressRail';
 import { SceneCopy } from './components/SceneCopy';
@@ -150,6 +159,52 @@ export function ScrollStory() {
         >
           <Vehicle className="vehicle--cerec" offsetPx={frame.cerecOffsetPx}>
             <CerecUnit frame={frame} />
+          </Vehicle>
+        </Scene>
+
+        {/* ---------------- 05 Education ---------------- */}
+        <Scene
+          id="education"
+          opacity={frame.sceneOpacity.education}
+          groundClass="ground--blueprint"
+          sky={<BlueprintSky />}
+          horizon={<BlueprintHorizon />}
+          marks={
+            <div className="stripes stripes--floor" style={{ transform: `translateX(${frame.benchShiftPx}px)` }}>
+              {MARKS.map((i) => <i key={i} />)}
+            </div>
+          }
+        >
+          <Vehicle className="vehicle--bench" offsetPx={frame.gearsOffsetPx}>
+            <GearBench frame={frame} />
+          </Vehicle>
+        </Scene>
+
+        {/* ---------------- 06 Languages ---------------- */}
+        <Scene
+          id="languages"
+          opacity={frame.sceneOpacity.languages}
+          groundClass="ground--dusk"
+          sky={<LanguagesSky />}
+          horizon={<LanguagesHorizon />}
+          marks={null}
+        >
+          <Vehicle className="vehicle--bubbles" offsetPx={0}>
+            <SpeechBubbles frame={frame} />
+          </Vehicle>
+        </Scene>
+
+        {/* ---------------- 07 Contact ---------------- */}
+        <Scene
+          id="contact"
+          opacity={frame.sceneOpacity.contact}
+          groundClass="ground--dawn"
+          sky={<ContactSky />}
+          horizon={<ContactHorizon />}
+          marks={null}
+        >
+          <Vehicle className="vehicle--signpost" offsetPx={frame.signpostOffsetPx}>
+            <Signpost />
           </Vehicle>
         </Scene>
 

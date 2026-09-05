@@ -189,15 +189,53 @@ export const storyScenes = [
       (tech, index, all) => all.findIndex((other) => other.name === tech.name) === index
     ),
   },
+  {
+    id: 'education',
+    display: ['Education'],
+    ticket: 'Stop 05 · Siegen & Cairo · 2007 – 2017',
+    roles: education.map((item) => ({
+      id: item.degree,
+      title: item.degree,
+      period: `${item.school} · ${item.period}`,
+      details: item.details,
+    })),
+    stack: [{ name: 'Mechatronics' }, { name: 'Engineering' }, { name: 'Material Science' }],
+  },
+  {
+    id: 'languages',
+    display: ['Languages'],
+    ticket: 'Stop 06 · Arabic · English · German',
+    roles: [
+      {
+        id: 'languages',
+        title: 'Three languages, daily',
+        details: languages.map((entry) => `${entry.language} — ${entry.level}`),
+      },
+    ],
+    stack: languages.map((entry) => ({ name: entry.language })),
+  },
+  {
+    id: 'contact',
+    display: ['Get in', 'touch'],
+    ticket: 'Stop 07 · End of the line',
+    roles: [
+      {
+        id: 'contact',
+        title: 'Say hello',
+        details: [profile.email, profile.location, 'GitHub · LinkedIn · Xing'],
+      },
+    ],
+    stack: [],
+  },
 ];
 
-/** The full seven-scene story. Scenes 5-7 are not built yet (Phase 4). */
+/** The full seven-scene story. */
 export const sceneRail = [
   { label: 'Eurowings Digital', built: true },
   { label: 'Flaschenpost', built: true },
   { label: 'INVERS', built: true },
   { label: 'Conze Informatik', built: true },
-  { label: 'Education', built: false },
-  { label: 'Languages', built: false },
-  { label: 'Contact', built: false },
+  { label: 'Education', built: true },
+  { label: 'Languages', built: true },
+  { label: 'Contact', built: true },
 ];

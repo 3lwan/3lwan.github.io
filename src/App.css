@@ -3,8 +3,8 @@
    ============================================================ */
 .track {
   position: relative;
-  /* four scenes, each with a hold and a hand-off */
-  height: 900vh;
+  /* seven scenes, each with a hold and a hand-off */
+  height: 1400vh;
 }
 
 .stage {
@@ -114,6 +114,18 @@
   background: linear-gradient(#1c5568 0%, #0e3242 45%, #061c25 100%);
 }
 
+.ground--blueprint {
+  background: linear-gradient(#123c4e 0%, #0a2532 45%, #04131c 100%);
+}
+
+.ground--dusk {
+  background: linear-gradient(#4a2c4e 0%, #2a1930 45%, #140c18 100%);
+}
+
+.ground--dawn {
+  background: linear-gradient(#4a5570 0%, #26304a 45%, #0f1526 100%);
+}
+
 .stripes--floor {
   /* close under the unit, clear of the copy block below */
   top: 5%;
@@ -218,6 +230,23 @@
   width: min(38vw, 520px);
   transform: translate(-50%, 14.8%);
   filter: drop-shadow(0 16px 24px rgba(8, 30, 40, 0.5));
+}
+
+.vehicle--bench {
+  width: min(62vw, 980px);
+  transform: translate(-50%, 14.8%);
+  filter: drop-shadow(0 16px 22px rgba(4, 20, 30, 0.55));
+}
+
+.vehicle--bubbles {
+  width: min(66vw, 1040px);
+  transform: translate(-50%, 14.8%);
+}
+
+.vehicle--signpost {
+  width: min(46vw, 700px);
+  transform: translate(-50%, 14.8%);
+  filter: drop-shadow(0 16px 22px rgba(6, 12, 26, 0.5));
 }
 
 .vehicle__move {

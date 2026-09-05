@@ -94,6 +94,11 @@ export function ScrollStory() {
           <span>
             {profile.role} · {profile.location}
           </span>
+          {/* Visible in the first frame, so the fast path is found without
+              having to scroll the story to discover it. */}
+          <a className="quickview" href="#/cv">
+            Quick view ↗
+          </a>
         </div>
 
         <Instruments altitude={frame.altitude} gear={frame.gear} status={frame.status} />

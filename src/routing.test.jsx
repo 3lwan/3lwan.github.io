@@ -103,3 +103,41 @@ describe('routing', () => {
     expect(fromPage).toBe(fromStory);
   });
 });
+
+describe('contact links', () => {
+  test('the contact scene links to every profile with a real href', () => {
+    const { container } = render(<App />);
+    const links = [...container.querySelectorAll('.copy__link')];
+    expect(links.map((a) => a.textContent.replace(' ↗', ''))).toEqual([
+      'GitHub',
+      'LinkedIn',
+      'Xing',
+    ]);
+    expect(links.map((a) => a.getAttribute('href'))).toEqual([
+      profile.links.github,
+      profile.links.linkedin,
+      profile.links.xing,
+    ]);
+    links.forEach((a) => {
+      expect(a).toHaveAttribute('target', '_blank');
+      // rel is required alongside target=_blank: without noopener the opened
+      // page gets a handle back to this one via window.opener
+      expect(a.getAttribute('rel')).toContain('noopener');
+    });
+  });
+
+  test('the email is a mailto link', () => {
+    const { container } = render(<App />);
+    const email = container.querySelector('.copy__inline-link');
+    expect(email).toHaveAttribute('href', `mailto:${profile.email}`);
+  });
+
+  test('nothing focusable sits inside aria-hidden scene copy', () => {
+    const { container } = render(<App />);
+    container.querySelectorAll('[aria-hidden="true"] a, [aria-hidden="true"] button').forEach((el) => {
+      expect(el.getAttribute('tabindex'), `${el.textContent} is focusable inside aria-hidden`).toBe(
+        '-1'
+      );
+    });
+  });
+});

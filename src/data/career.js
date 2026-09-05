@@ -222,10 +222,18 @@ export const storyScenes = [
       {
         id: 'contact',
         title: 'Say hello',
-        details: [profile.email, profile.location, 'GitHub · LinkedIn · Xing'],
+        details: [
+          { text: profile.email, href: `mailto:${profile.email}` },
+          { text: profile.location },
+        ],
       },
     ],
     stack: [],
+    links: [
+      { label: 'GitHub', href: profile.links.github },
+      { label: 'LinkedIn', href: profile.links.linkedin },
+      { label: 'Xing', href: profile.links.xing },
+    ],
   },
 ];
 

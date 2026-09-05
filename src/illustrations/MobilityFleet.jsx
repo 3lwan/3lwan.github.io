@@ -1,3 +1,5 @@
+import { CarSharing, CAR_DEFS } from './CarSharing';
+
 /**
  * INVERS shared-mobility fleet: a car-sharing city car, a shared moped and a
  * kick scooter, side profile, all facing right.
@@ -10,25 +12,6 @@
  * a lock collar on the scooter. Kept small and dark on the car specifically -
  * a light bar across the roof plus a body stripe reads as a police car.
  */
-
-const CAR_BODY =
-  // Drawn to the proportions of a modern premium compact hatchback: length 579
-  // to height 176 (~3.3:1), wheelbase 0.65 of length, wheel diameter 0.43 of
-  // body height. Arced roof dropping to a tailgate spoiler, heavily raked
-  // windscreen, blistered arches. No manufacturer badging.
-  'M44,348 L42,306 C42,296 48,290 58,286 ' +      // rear bumper and panel
-  'L150,236 ' +                                    // tailgate: steeply raked
-  'C170,224 196,216 224,214 ' +                    // C-pillar into the roof
-  'L360,212 C376,212 388,215 397,224 ' +           // roof, then the A-pillar
-  'L487,268 C498,274 508,278 520,279 ' +           // windscreen: heavily raked
-  'L576,284 ' +                                    // bonnet
-  'C598,287 612,296 616,310 L619,336 C620,346 615,352 606,352 ' +
-  'L556,353 C556,308 537,294 514,294 C491,294 470,308 470,354 ' +
-  'L186,357 C186,314 165,300 137,300 C109,300 88,314 88,358 ' +
-  'L54,358 C46,358 44,354 44,348 Z';
-
-/** Every pane of side glass stops on this line. */
-const BELTLINE = 264;
 
 function Tyre({ id, cx, cy, r, rimR, spinDeg, spokes = 5, road = false }) {
   const arms = Array.from({ length: spokes }, (_, i) => (i * 360) / spokes);
@@ -85,15 +68,7 @@ export function MobilityFleet({ frame }) {
   return (
     <svg viewBox="0 0 1200 460" aria-hidden="true" focusable="false">
       <defs>
-        <linearGradient id="carShell" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#FDFDFE" />
-          <stop offset="58%" stopColor="#E9ECF0" />
-          <stop offset="100%" stopColor="#B4BAC2" />
-        </linearGradient>
-        <linearGradient id="carGlass" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#3E4E5B" />
-          <stop offset="100%" stopColor="#161E26" />
-        </linearGradient>
+        {CAR_DEFS}
         <linearGradient id="mopedShell" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#1160C4" />
           <stop offset="55%" stopColor="#00469C" />
@@ -104,72 +79,12 @@ export function MobilityFleet({ frame }) {
           <stop offset="55%" stopColor="#BFC5CB" />
           <stop offset="100%" stopColor="#858C93" />
         </linearGradient>
-        <clipPath id="carClip">
-          <path d={CAR_BODY} />
-        </clipPath>
       </defs>
 
-      <ellipse cx="330" cy="396" rx="300" ry="10" fill="#04121F" opacity=".5" />
       <ellipse cx="790" cy="396" rx="120" ry="8" fill="#04121F" opacity=".45" />
       <ellipse cx="1060" cy="396" rx="95" ry="7" fill="#04121F" opacity=".4" />
 
-      {/* ---------------- car-sharing hatchback ---------------- */}
-      <path d={CAR_BODY} fill="url(#carShell)" />
-      <g clipPath="url(#carClip)">
-        {/* body-colour flanks with a soft reflection, as on a white car */}
-        <path d="M70,296 C200,282 360,278 500,290 L500,306 C360,294 200,298 72,314 Z" fill="#FFFFFF" opacity=".55" />
-        <path d="M96,326 C240,316 380,314 520,322 L520,332 C380,324 240,326 98,338 Z" fill="#9AA3AD" opacity=".35" />
-      </g>
-      <path d={CAR_BODY} fill="none" stroke="#1B2733" strokeWidth="3" />
-
-      {/* the spoiler is a crease in the tailgate, not a bolted-on panel */}
-      <path d="M152,240 L182,226" stroke="#B9C0C8" strokeWidth="2.5" fill="none" opacity=".9" />
-
-      {/* glass: quarter light, rear door, front door - one beltline */}
-      <path
-        d={`M168,${BELTLINE} C182,246 198,234 212,226 L216,${BELTLINE} Z`}
-        fill="url(#carGlass)" stroke="#1B2733" strokeWidth="2.5"
-      />
-      <path
-        d={`M232,${BELTLINE} L234,215 L306,213 L306,${BELTLINE} Z`}
-        fill="url(#carGlass)" stroke="#1B2733" strokeWidth="2.5"
-      />
-      <path
-        d={`M322,${BELTLINE} L324,214 L360,212 C374,212 384,216 392,225 L430,${BELTLINE} Z`}
-        fill="url(#carGlass)" stroke="#1B2733" strokeWidth="2.5"
-      />
-      <rect x="306" y="212" width="16" height="52" fill="#1B2733" />
-
-      {/* telematics: a small dark shark fin, never a light bar */}
-      <path d="M244,210 C250,200 262,195 274,194 L278,211 Z" fill="#243444" stroke="#111C26" strokeWidth="2" />
-      <circle cx="272" cy="202" r="2.6" fill="#00C8AA" />
-
-      {/* shut lines, character crease, handles */}
-      <g stroke="#8B939C" strokeWidth="2.5" fill="none" opacity=".8">
-        <path d="M228,222 V354" />
-        <path d="M314,214 V354" />
-        <path d="M436,268 C448,290 452,318 450,352" />
-      </g>
-      <path d="M120,300 C250,290 380,286 466,294" fill="none" stroke="#B9C0C8" strokeWidth="2.5" opacity=".9" />
-      <g fill="#3A424B">
-        <rect x="248" y="272" width="38" height="7" rx="3.5" />
-        <rect x="344" y="274" width="38" height="7" rx="3.5" />
-      </g>
-
-      {/* side skirt, lamps, mirror */}
-      <path d="M100,344 L548,338 L548,352 L100,358 Z" fill="#2B333C" />
-      <path d="M572,286 L610,296 C616,298 617,304 613,307 L572,302 Z" fill="#20262E" stroke="#1B2733" strokeWidth="2.5" />
-      <path d="M578,292 L604,299 C608,300 608,303 605,304 L578,300 Z" fill="#FFF4D6" />
-      <path d="M43,298 L78,294 L80,310 L43,314 Z" fill="#C6362F" stroke="#1B2733" strokeWidth="2.5" />
-      <path d="M432,250 h12" stroke="#3A424B" strokeWidth="4.5" />
-      <path d="M440,242 C452,242 458,248 458,256 C458,262 452,264 444,262 L438,246 Z" fill="#2B333C" />
-
-      <g fill="none" stroke="#141C23" strokeWidth="4">
-        <path d="M556,353 C556,308 537,294 514,294 C491,294 470,308 470,354" />
-        <path d="M186,357 C186,314 165,300 137,300 C109,300 88,314 88,358" />
-      </g>
-      <Tyre id="car-wheel-rear" cx={137} cy={352} r={40} rimR={29} spinDeg={carWheelDeg} spokes={10} road />
-      <Tyre id="car-wheel-front" cx={514} cy={352} r={40} rimR={29} spinDeg={carWheelDeg} spokes={10} road />
+      <CarSharing spinDeg={carWheelDeg} />
 
       {/* ---------------- shared moped ---------------- */}
       <path d="M700,350 L800,350 C818,350 830,342 838,326" fill="none" stroke="#2A2C31" strokeWidth="8" strokeLinecap="round" />

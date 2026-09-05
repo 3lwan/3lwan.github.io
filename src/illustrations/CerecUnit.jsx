@@ -16,25 +16,91 @@ const CASTORS = [
   { id: 'castor-right', cx: 354 },
 ];
 
-function ToothModel() {
+/**
+ * Occlusal view of a lower dental arch, the way chairside CAD software shows a
+ * scan: a horseshoe of individual teeth, molars at the back tapering to
+ * incisors at the front, with one tooth highlighted as the restoration being
+ * designed.
+ *
+ * Fourteen teeth are placed round an ellipse and rotated to face outward, so
+ * the shape reads as a jaw rather than an anonymous blob.
+ */
+function DentalArch({ cx = 286, cy = 136, rx = 76, ry = 50 }) {
+  const COUNT = 14;
+  // Sweep the lower half of an ellipse: molar -> incisor -> molar.
+  const at = (t) => {
+    const angle = Math.PI * (0.05 + t * 0.9);
+    return {
+      angle,
+      x: cx - Math.cos(angle) * rx,
+      y: cy + Math.sin(angle) * ry,
+      // The crown points along the outward normal: upright at the front,
+      // lying on its side at the molars. Rotating the other way puts the back
+      // teeth on their corners.
+      deg: 90 - (angle * 180) / Math.PI,
+    };
+  };
+
+  const gum = Array.from({ length: 40 }, (_, i) => at(i / 39))
+    .map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`)
+    .join(' ');
+
+  const teeth = Array.from({ length: COUNT }, (_, i) => {
+    const t = i / (COUNT - 1);
+    const fromFront = Math.abs(t - 0.5) * 2; // 0 at the incisors, 1 at the molars
+    const point = at(t);
+    return {
+      ...point,
+      // sized to sit shoulder to shoulder round the arch, as real teeth do
+      w: 12 + fromFront * 4,
+      h: 11 + fromFront * 5,
+      molar: fromFront > 0.5,
+    };
+  });
+
+  const design = teeth[4];
+
   return (
     <g>
-      {/* occlusal view of a molar, the way chairside CAD software renders it */}
-      <path
-        d="M300,150 C280,150 262,162 258,182 C254,204 258,228 268,244 C278,260 296,268 312,264
-           C328,260 342,246 348,228 C356,206 354,178 342,164 C332,152 316,148 300,150 Z"
-        fill="#7FD4B8"
-        stroke="#1D6A57"
-        strokeWidth="3"
-      />
-      <path
-        d="M286,170 C280,186 282,206 290,222 M318,168 C326,184 326,208 318,226 M266,204 L344,200"
-        fill="none"
-        stroke="#2E8C74"
-        strokeWidth="3"
-        strokeLinecap="round"
-      />
-      <path d="M292,158 C286,152 276,152 270,158" fill="none" stroke="#B8ECDB" strokeWidth="3" strokeLinecap="round" />
+      {/* gum arch, drawn as a thick stroke so it follows the curve exactly */}
+      <path d={gum} fill="none" stroke="#123F4C" strokeWidth="30" strokeLinecap="round" />
+      <path d={gum} fill="none" stroke="#1E6072" strokeWidth="24" strokeLinecap="round" />
+      <path d={gum} fill="none" stroke="#2A7A8E" strokeWidth="10" strokeLinecap="round" opacity=".5" />
+
+      {teeth.map((tooth, i) => (
+        <g key={i} transform={`rotate(${tooth.deg} ${tooth.x} ${tooth.y})`}>
+          <rect
+            x={tooth.x - tooth.w / 2}
+            y={tooth.y - tooth.h / 2}
+            width={tooth.w}
+            height={tooth.h}
+            rx={tooth.molar ? 3 : 4}
+            fill={i === 4 ? '#8FE3C2' : '#E4F2EC'}
+            stroke={i === 4 ? '#1F8A63' : '#4E8C82'}
+            strokeWidth="1.1"
+          />
+          {tooth.molar && (
+            <path
+              d={`M${tooth.x - tooth.w / 2 + 3},${tooth.y} h${tooth.w - 6}
+                  M${tooth.x},${tooth.y - tooth.h / 2 + 3} v${tooth.h - 6}`}
+              stroke="#6FA79C"
+              strokeWidth="0.9"
+              opacity=".8"
+            />
+          )}
+          {!tooth.molar && (
+            <path
+              d={`M${tooth.x - tooth.w / 2 + 3},${tooth.y + tooth.h / 2 - 3} h${tooth.w - 6}`}
+              stroke="#8FB8B0"
+              strokeWidth="0.9"
+              opacity=".7"
+            />
+          )}
+        </g>
+      ))}
+
+      {/* margin line round the tooth being designed */}
+      <circle cx={design.x} cy={design.y} r="12" fill="none" stroke="#FFD24A" strokeWidth="1.3" strokeDasharray="3 3" />
     </g>
   );
 }
@@ -64,6 +130,10 @@ export function CerecUnit({ frame }) {
           <stop offset="0%" stopColor="#2AA7C9" stopOpacity=".38" />
           <stop offset="100%" stopColor="#2AA7C9" stopOpacity="0" />
         </radialGradient>
+        {/* nothing drawn for the application may spill past the bezel */}
+        <clipPath id="screenClip">
+          <rect x="134" y="34" width="332" height="200" rx="5" />
+        </clipPath>
       </defs>
 
       <ellipse cx="300" cy="398" rx="150" ry="10" fill="#0A1418" opacity=".5" />
@@ -72,7 +142,7 @@ export function CerecUnit({ frame }) {
       <rect x="116" y="18" width="368" height="248" rx="12" fill="url(#cerecBezel)" stroke="#8E8B84" strokeWidth="3" />
       <rect x="134" y="34" width="332" height="200" rx="5" fill="url(#cerecScreen)" />
 
-      <g style={{ opacity: screenOpacity }}>
+      <g style={{ opacity: screenOpacity }} clipPath="url(#screenClip)">
         <rect x="134" y="34" width="332" height="200" rx="5" fill="url(#screenGlow)" />
         {/* the WPF application chrome: title bar, tool rail, status strip */}
         <rect x="134" y="34" width="332" height="18" fill="#15779B" />
@@ -84,7 +154,7 @@ export function CerecUnit({ frame }) {
         {[62, 84, 106, 128, 150].map((y) => (
           <rect key={y} x="145" y={y} width="24" height="14" rx="3" fill="#15779B" opacity=".85" />
         ))}
-        <ToothModel />
+        <DentalArch />
         {/* right-hand parameter panel */}
         <rect x="392" y="60" width="62" height="150" rx="4" fill="#0E2C39" />
         {[70, 92, 114, 136, 158, 180].map((y) => (

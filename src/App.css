@@ -115,7 +115,8 @@
 }
 
 .stripes--floor {
-  top: 12%;
+  /* close under the unit, clear of the copy block below */
+  top: 5%;
 }
 
 .stripes--floor i {
@@ -390,7 +391,10 @@
 }
 
 .copy h3 {
-  margin: 14px 0 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
   font-family: var(--body);
   font-weight: 500;
   font-size: clamp(1rem, 1.7vw, 1.2rem);
@@ -398,14 +402,76 @@
   text-shadow: 0 1px 10px rgba(8, 4, 10, 0.8);
 }
 
+.copy__role {
+  margin-top: 14px;
+}
+
+.copy__period {
+  margin-left: 10px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.65;
+}
+
 .copy ul {
   list-style: none;
   padding: 0;
-  margin: 16px 0 0;
+  margin: 12px 0 0;
   display: flex;
   flex-direction: column;
   gap: 7px;
   max-width: 34rem;
+}
+
+/* Two roles at one employer sit side by side, so neither reads as a footnote
+   to the other and the block stays short enough for the scene. */
+.copy--dense {
+  width: min(54rem, 88vw);
+}
+
+.copy--dense h2 {
+  font-size: clamp(1.9rem, 4.4vw, 3.2rem);
+}
+
+.copy--dense .copy__roles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 30px;
+  align-items: start;
+  margin-top: 4px;
+}
+
+.copy--dense .copy__role {
+  margin-top: 8px;
+}
+
+/* h3 is a flex row, so display:block will not break the line - the period
+   needs a full-width basis to drop under the title. */
+.copy--dense .copy__period {
+  flex-basis: 100%;
+  margin: 4px 0 0;
+}
+
+.copy--dense ul {
+  gap: 4px;
+  margin-top: 9px;
+}
+
+.copy--dense li {
+  font-size: 0.87rem;
+  line-height: 1.35;
+}
+
+.copy--dense .chips {
+  margin-top: 14px;
+}
+
+@media (max-width: 900px) {
+  .copy--dense .copy__roles {
+    grid-template-columns: 1fr;
+  }
 }
 
 .copy li {

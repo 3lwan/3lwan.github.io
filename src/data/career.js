@@ -149,6 +149,48 @@ export const skills = [
   { name: 'Kubernetes', level: 1 },
 ];
 
+/**
+ * The scenes of the scroll story, in scroll order.
+ *
+ * A scene is not the same thing as a job: Conze Informatik covers two roles at
+ * one employer, and the scene shows both rather than dropping the earlier one.
+ */
+const job = (id) => experiences.find((entry) => entry.id === id);
+
+export const storyScenes = [
+  {
+    id: 'eurowings',
+    display: ['Eurowings', 'Digital'],
+    ticket: 'Gate 01 · Eurowings Digital · Oct 2024 —',
+    roles: [job('eurowings')],
+    stack: job('eurowings').stack,
+  },
+  {
+    id: 'flaschenpost',
+    display: ['Flaschen', 'post'],
+    ticket: 'Drop 02 · Flaschenpost · Jun 2022 – Sep 2024',
+    roles: [job('flaschenpost')],
+    stack: job('flaschenpost').stack,
+  },
+  {
+    id: 'invers',
+    display: ['INVERS'],
+    ticket: 'Stop 03 · INVERS · Jul 2020 – Jun 2022',
+    roles: [job('invers')],
+    stack: job('invers').stack,
+  },
+  {
+    id: 'conze',
+    display: ['Conze', 'Informatik'],
+    ticket: 'Stop 04 · Conze Informatik · Nov 2017 – Jul 2020',
+    roles: [job('conze-lead'), job('conze-dev')],
+    // both roles' technologies, de-duplicated, newest role first
+    stack: [...job('conze-lead').stack, ...job('conze-dev').stack].filter(
+      (tech, index, all) => all.findIndex((other) => other.name === tech.name) === index
+    ),
+  },
+];
+
 /** The full seven-scene story. Scenes 5-7 are not built yet (Phase 4). */
 export const sceneRail = [
   { label: 'Eurowings Digital', built: true },

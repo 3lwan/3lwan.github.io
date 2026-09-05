@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { useScrollProgress } from './hooks/useScrollProgress';
 import { useViewportWidth } from './hooks/useViewportWidth';
 import { frameAt } from './scroll/choreography';
-import { experiences, profile } from './data/career';
+import { storyScenes, profile } from './data/career';
 import { Aircraft } from './illustrations/Aircraft';
 import { Van } from './illustrations/Van';
 import { MobilityFleet } from './illustrations/MobilityFleet';
@@ -15,13 +15,6 @@ import { Instruments } from './components/Instruments';
 import { ProgressRail } from './components/ProgressRail';
 import { SceneCopy } from './components/SceneCopy';
 
-const byId = (id) => experiences.find((job) => job.id === id);
-const SCENE_COPY = [
-  byId('eurowings'),
-  byId('flaschenpost'),
-  byId('invers'),
-  byId('conze-lead'),
-];
 
 const MARKS = Array.from({ length: 24 }, (_, i) => i);
 const LIGHTS = Array.from({ length: 20 }, (_, i) => i);
@@ -174,8 +167,8 @@ export function ScrollStory() {
         <Instruments rows={frame.instruments} />
 
         <div className="copy-deck">
-          {SCENE_COPY.map((scene) => (
-            <SceneCopy key={scene.id} scene={scene} opacity={frame.copyOpacity[scene.id.split('-')[0]]} />
+          {storyScenes.map((scene) => (
+            <SceneCopy key={scene.id} scene={scene} opacity={frame.copyOpacity[scene.id]} />
           ))}
         </div>
 

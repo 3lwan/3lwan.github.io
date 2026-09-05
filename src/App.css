@@ -354,7 +354,7 @@
 
 .copy li {
   position: relative;
-  padding-left: 19px;
+  padding-left: 18px;
   font-size: 0.95rem;
   line-height: 1.45;
   color: rgba(246, 239, 234, 0.8);
@@ -363,12 +363,14 @@
 .copy li::before {
   content: '';
   position: absolute;
-  left: 0;
-  top: 0.62em;
-  width: 9px;
-  height: 1px;
+  left: 2px;
+  /* centred on the first line's cap height rather than its box */
+  top: 0.58em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
   background: currentColor;
-  opacity: 0.6;
+  opacity: 0.75;
 }
 
 .chips {

@@ -70,8 +70,30 @@ describe('LinearCV', () => {
     });
   });
 
-  test('flags the Eurowings role as pending rather than inventing detail', () => {
+  test('shows the real Eurowings role, no placeholder left anywhere', () => {
     render(<LinearCV />);
-    expect(screen.getByText(/details pending/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /Eurowings Digital — Senior Software Developer/i })
+    ).toBeInTheDocument();
+    expect(screen.getByText(/Oct 2024/)).toBeInTheDocument();
+    expect(screen.queryByText(/details pending/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/placeholder/i)).not.toBeInTheDocument();
+  });
+
+  test('no employer is left carrying the placeholder flag', () => {
+    expect(experiences.filter((job) => job.placeholder)).toHaveLength(0);
+  });
+
+  test('every stack entry is an object with a name, and levels stay in 1-5', () => {
+    experiences.forEach((job) => {
+      job.stack.forEach((tech) => {
+        expect(typeof tech.name).toBe('string');
+        expect(tech.name.length).toBeGreaterThan(0);
+        if (tech.level !== undefined) {
+          expect(tech.level).toBeGreaterThanOrEqual(1);
+          expect(tech.level).toBeLessThanOrEqual(5);
+        }
+      });
+    });
   });
 });

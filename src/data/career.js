@@ -1,15 +1,17 @@
 /**
  * Single source of truth for every piece of CV content.
  *
- * Content here is lifted verbatim from the pre-redesign App.jsx. The one
- * exception is Eurowings Digital, which was never in that file - the old CV
- * stopped at Flaschenpost (Sept 2024). It is marked `placeholder: true` so the
- * UI can flag it rather than quietly present invented text as fact.
+ * Content is lifted from the pre-redesign App.jsx, plus Eurowings Digital,
+ * which that file never had - the old CV stopped at Flaschenpost (Sept 2024).
+ *
+ * `stack` entries are always objects. `level` (1-5) is optional and drives the
+ * hover fill on SkillChip; it is only set where a level is actually known,
+ * rather than inventing one to make the chips look uniform.
  */
 
 export const profile = {
   name: 'Mohamed Elwan',
-  role: 'Software Engineer',
+  role: 'Senior Software Developer',
   location: 'Bergisch Gladbach, Germany',
   email: 'mohamed.elwan.7@gmail.com',
   phone: '+49 176 37110701',
@@ -26,12 +28,24 @@ export const experiences = [
     id: 'eurowings',
     company: 'Eurowings Digital',
     display: ['Eurowings', 'Digital'],
-    title: 'Software Engineer',
-    period: '2024 —',
-    ticket: 'Gate 01 · Eurowings Digital · 2024 —',
-    placeholder: true,
-    details: ['Role details to be supplied — this scene is running on placeholder copy.'],
-    stack: ['.NET / C#', 'Azure', 'Kubernetes', 'REST APIs'],
+    title: 'Senior Software Developer',
+    period: 'Oct 2024 —',
+    ticket: 'Gate 01 · Eurowings Digital · Oct 2024 —',
+    details: [
+      'Design and build the backend APIs behind the Eurowings mobile app',
+      'Shape features with the team, so what ships genuinely helps travellers',
+      'Track API health on dashboards to catch and resolve problems quickly',
+    ],
+    stack: [
+      { name: 'C# / .NET' },
+      { name: 'Java Spring Boot', level: 3 },
+      { name: 'Azure' },
+      { name: 'GitHub' },
+      { name: 'Terraform', level: 2 },
+      { name: 'AI', level: 4 },
+      { name: 'REST' },
+      { name: 'gRPC', level: 3 },
+    ],
     palette: { primary: '#871C54', accent: '#AF1E65', secondary: '#00A6CE' },
   },
   {
@@ -47,7 +61,7 @@ export const experiences = [
       'Worked directly with business customers on ERP system integration',
       "Designed and architected the team's projects",
     ],
-    stack: ['.NET', 'Blazor', 'JavaScript', 'HTML / CSS', 'SQL', 'Azure', 'Kubernetes'],
+    stack: ['.NET', 'Blazor', 'JavaScript', 'HTML / CSS', 'SQL', 'Azure', 'Kubernetes'].map((name) => ({ name })),
     palette: { primary: '#A50A50', accent: '#82BE3C', secondary: '#5A9632' },
   },
   {
@@ -58,7 +72,7 @@ export const experiences = [
     period: 'Jul 2020 – Jun 2022',
     ticket: 'Stop 03 · INVERS · Jul 2020 – Jun 2022',
     details: ['Maintaining existing microservices and creating new ones.'],
-    stack: ['.NET / C#', 'Docker', 'Kubernetes / Helm', 'GitLab', 'MongoDB'],
+    stack: ['.NET / C#', 'Docker', 'Kubernetes / Helm', 'GitLab', 'MongoDB'].map((name) => ({ name })),
     palette: { primary: '#00469C', accent: '#00C8AA', secondary: '#A4A4A4' },
   },
   {
@@ -76,7 +90,7 @@ export const experiences = [
       'Technical contact for customers',
       'Effort estimation for tasks',
     ],
-    stack: ['.NET', 'C#', 'WPF', 'XAML'],
+    stack: ['.NET', 'C#', 'WPF', 'XAML'].map((name) => ({ name })),
     palette: { primary: '#15779B', accent: '#333333', secondary: '#E6E6E6' },
   },
   {
@@ -88,7 +102,7 @@ export const experiences = [
     details: [
       '.NET software developer using C++, C# and XAML for desktop applications with WPF.',
     ],
-    stack: ['.NET', 'C++', 'C#', 'WPF', 'XAML'],
+    stack: ['.NET', 'C++', 'C#', 'WPF', 'XAML'].map((name) => ({ name })),
     palette: { primary: '#15779B', accent: '#333333', secondary: '#E6E6E6' },
   },
 ];
@@ -120,14 +134,18 @@ export const skills = [
   { name: 'xUnit', level: 5 },
   { name: 'Rest APIs', level: 5 },
   { name: 'Git', level: 5 },
+  { name: 'AI', level: 4 },
   { name: 'Microservices', level: 4 },
   { name: 'Blazor', level: 4 },
   { name: 'Docker', level: 4 },
   { name: 'Azure', level: 3 },
   { name: 'SQL', level: 3 },
   { name: 'Javascript', level: 3 },
+  { name: 'Java Spring Boot', level: 3 },
+  { name: 'gRPC', level: 3 },
   { name: 'Python', level: 2 },
   { name: 'Angular', level: 2 },
+  { name: 'Terraform', level: 2 },
   { name: 'Kubernetes', level: 1 },
 ];
 

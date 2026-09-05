@@ -42,7 +42,7 @@ export function LinearCV() {
                 <li key={detail}>{detail}</li>
               ))}
             </ul>
-            <p className="linear__stack">{job.stack.join(' · ')}</p>
+            <p className="linear__stack">{job.stack.map((t) => t.name).join(' · ')}</p>
           </article>
         ))}
       </section>

@@ -36,7 +36,7 @@ export function SceneCopy({ scene, opacity }) {
       </ul>
       <div className="chips">
         {scene.stack.map((tech) => (
-          <SkillChip key={tech} name={tech} />
+          <SkillChip key={tech.name} name={tech.name} level={tech.level} />
         ))}
       </div>
       {scene.placeholder && (

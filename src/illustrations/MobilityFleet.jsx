@@ -12,17 +12,29 @@
  */
 
 const CAR_BODY =
-  'M40,356 L38,290 C38,276 45,267 58,264 L150,232 C161,225 175,220 190,219 ' +
-  'L372,214 C392,214 407,221 418,233 L486,282 C498,290 516,294 535,296 ' +
-  'L596,303 C615,306 626,317 627,333 L629,352 C630,359 625,363 616,363 ' +
-  'L572,364 C572,314 543,302 522,302 C501,302 470,314 470,365 ' +
-  'L202,368 C202,318 173,306 152,306 C131,306 100,318 100,369 ' +
-  'L52,370 C44,370 39,366 39,358 Z';
+  // Three-box saloon: a flat boot deck behind a steep rear screen, with a solid
+  // C-pillar between them. A single sloping tailgate line made the rear read
+  // as one long blank quarter panel.
+  'M42,350 L40,290 C40,274 46,266 58,263 ' +      // rear panel
+  'L150,258 ' +                                    // boot deck: flat
+  'C168,244 196,220 222,206 ' +                    // rear screen
+  'L372,200 C392,200 404,204 414,214 ' +           // roof, then the A-pillar
+  'L470,254 C478,260 486,264 496,265 ' +           // windscreen down to the cowl
+  'L582,268 ' +                                    // bonnet
+  'C602,269 614,278 618,292 L621,332 C622,343 617,350 607,350 ' +
+  'L556,351 C556,306 530,292 508,292 C486,292 458,306 458,352 ' +
+  'L212,356 C212,310 186,296 162,296 C138,296 110,310 110,358 ' +
+  'L54,359 C46,359 42,355 42,350 Z';
 
-function Tyre({ id, cx, cy, r, rimR, spinDeg, spokes = 5 }) {
+/** All three glass panes stop on one beltline. */
+const BELTLINE = 248;
+
+function Tyre({ id, cx, cy, r, rimR, spinDeg, spokes = 5, road = false }) {
   const arms = Array.from({ length: spokes }, (_, i) => (i * 360) / spokes);
-  // tread block count scales with the tyre, so small wheels do not look coarse
-  const blocks = Math.max(10, Math.round(r * 0.5));
+  // A road tyre gets finer, more inset tread; coarse blocks read as off-road.
+  const blocks = Math.max(10, Math.round(r * (road ? 0.9 : 0.5)));
+  const size = road ? 2.4 : 3.8;
+  const inset = road ? 6 : 2.5;
   const tread = Array.from({ length: blocks }, (_, i) => (i * 2 * Math.PI) / blocks);
   return (
     <>
@@ -53,10 +65,10 @@ function Tyre({ id, cx, cy, r, rimR, spinDeg, spokes = 5 }) {
         {tread.map((a, i) => (
           <rect
             key={`t${i}`}
-            x={cx + Math.cos(a) * (r - 2.5) - 1.9}
-            y={cy + Math.sin(a) * (r - 2.5) - 1.9}
-            width="3.8"
-            height="3.8"
+            x={cx + Math.cos(a) * (r - inset) - size / 2}
+            y={cy + Math.sin(a) * (r - inset) - size / 2}
+            width={size}
+            height={size}
             rx="1"
             fill="#33363C"
           />
@@ -103,42 +115,57 @@ export function MobilityFleet({ frame }) {
       {/* ---------------- car-sharing city car ---------------- */}
       <path d={CAR_BODY} fill="url(#carShell)" />
       <g clipPath="url(#carClip)">
-        {/* a low rocker only - no full-height two-tone, which reads as livery */}
-        <path d="M20,346 L640,342 L640,380 L20,380 Z" fill="#0E4F9E" opacity=".9" />
-        <path d="M60,228 L400,220 L400,236 L60,244 Z" fill="#FFFFFF" opacity=".45" />
+        {/* a low rocker only - a full-height two-tone reads as livery */}
+        <path d="M24,330 L640,326 L640,380 L24,380 Z" fill="#0E4F9E" opacity=".92" />
+        <path d="M118,272 C210,260 340,254 500,262 L500,274 C340,266 212,272 120,284 Z" fill="#FFFFFF" opacity=".3" />
       </g>
       <path d={CAR_BODY} fill="none" stroke="#1B2733" strokeWidth="3" />
 
-      <path d="M170,242 L194,230 L286,227 L286,268 L154,270 Z" fill="url(#carGlass)" stroke="#1B2733" strokeWidth="2.5" />
-      <path d="M300,227 L378,224 C386,226 392,231 398,238 L442,280 L300,278 Z" fill="url(#carGlass)" stroke="#1B2733" strokeWidth="2.5" />
-      <rect x="289" y="226" width="8" height="52" fill="#1B2733" />
+      {/* glass: rear screen, rear door, front door - all on one beltline */}
+      <path
+        d={`M160,${BELTLINE} C178,232 200,214 218,206 L224,${BELTLINE} Z`}
+        fill="url(#carGlass)" stroke="#1B2733" strokeWidth="2.5"
+      />
+      <path
+        d={`M244,${BELTLINE} L246,205 L322,201 L322,${BELTLINE} Z`}
+        fill="url(#carGlass)" stroke="#1B2733" strokeWidth="2.5"
+      />
+      <path
+        d={`M342,201 L400,199 C410,199 418,203 424,210 L460,${BELTLINE} L342,${BELTLINE} Z`}
+        fill="url(#carGlass)" stroke="#1B2733" strokeWidth="2.5"
+      />
+      <rect x="322" y="199" width="20" height="49" rx="3" fill="#1B2733" />
 
-      {/* telematics: a small dark shark fin, not a light bar */}
-      <path d="M232,219 C238,208 250,201 264,200 L268,219 Z" fill="#243444" stroke="#111C26" strokeWidth="2" />
-      <circle cx="262" cy="212" r="2.6" fill="#00C8AA" />
-      {/* brand mark on the door, in place of a stripe */}
-      <circle cx="352" cy="318" r="13" fill="#00C8AA" opacity=".92" />
-      <path d="M346,318 h12 M352,312 v12" stroke="#04303A" strokeWidth="3" strokeLinecap="round" />
+      {/* telematics: a small dark shark fin, never a light bar */}
+      <path d="M270,198 C276,188 288,182 300,181 L304,198 Z" fill="#243444" stroke="#111C26" strokeWidth="2" />
+      <circle cx="298" cy="190" r="2.6" fill="#00C8AA" />
 
-      <g stroke="#8B939C" strokeWidth="2.5" fill="none" opacity=".9">
-        <path d="M186,236 V356" />
-        <path d="M296,278 V358" />
+      {/* boot lid seam, shut lines, bonnet seam, handles */}
+      <g stroke="#8B939C" strokeWidth="2.5" fill="none" opacity=".8">
+        <path d="M56,270 L148,265" />
+        <path d="M240,210 V352" />
+        <path d="M340,200 V352" />
+        <path d="M460,248 V354" />
+        <path d="M470,260 L580,270" />
       </g>
       <g fill="#3A424B">
-        <rect x="214" y="286" width="40" height="8" rx="4" />
-        <rect x="330" y="286" width="40" height="8" rx="4" />
+        <rect x="264" y="262" width="40" height="8" rx="4" />
+        <rect x="376" y="264" width="40" height="8" rx="4" />
       </g>
-      <path d="M596,306 L624,314 C630,316 632,322 630,328 L596,326 Z" fill="#FFF4D6" stroke="#1B2733" strokeWidth="2.5" />
-      <rect x="40" y="300" width="14" height="24" rx="5" fill="#D2463F" stroke="#1B2733" strokeWidth="2.5" />
-      <path d="M418,240 h18" stroke="#3A424B" strokeWidth="5.5" />
-      <rect x="434" y="233" width="13" height="21" rx="5" fill="#3A424B" />
+
+      {/* lamps and mirror */}
+      <path d="M584,274 L612,284 C618,286 620,292 618,298 L584,296 Z" fill="#FFF4D6" stroke="#1B2733" strokeWidth="2.5" />
+      <rect x="580" y="312" width="40" height="10" rx="4" fill="#2E3742" />
+      <path d="M41,282 L57,282 L57,308 L41,308 Z" fill="#D2463F" stroke="#1B2733" strokeWidth="2.5" />
+      <path d="M448,236 h15" stroke="#3A424B" strokeWidth="5" />
+      <rect x="459" y="230" width="13" height="19" rx="5" fill="#3A424B" />
 
       <g fill="none" stroke="#141C23" strokeWidth="4">
-        <path d="M572,364 C572,314 543,302 522,302 C501,302 470,314 470,365" />
-        <path d="M202,368 C202,318 173,306 152,306 C131,306 100,318 100,369" />
+        <path d="M556,351 C556,306 530,292 508,292 C486,292 458,306 458,352" />
+        <path d="M212,356 C212,310 186,296 162,296 C138,296 110,310 110,358" />
       </g>
-      <Tyre id="car-wheel-rear" cx={152} cy={350} r={42} rimR={26} spinDeg={carWheelDeg} />
-      <Tyre id="car-wheel-front" cx={522} cy={350} r={42} rimR={26} spinDeg={carWheelDeg} />
+      <Tyre id="car-wheel-rear" cx={162} cy={348} r={44} rimR={27} spinDeg={carWheelDeg} road />
+      <Tyre id="car-wheel-front" cx={508} cy={348} r={44} rimR={27} spinDeg={carWheelDeg} road />
 
       {/* ---------------- shared moped ---------------- */}
       <path d="M700,350 L800,350 C818,350 830,342 838,326" fill="none" stroke="#2A2C31" strokeWidth="8" strokeLinecap="round" />

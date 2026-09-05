@@ -5,15 +5,56 @@ import { frameAt } from './scroll/choreography';
 import { experiences, profile } from './data/career';
 import { Aircraft } from './illustrations/Aircraft';
 import { Van } from './illustrations/Van';
+import { MobilityFleet } from './illustrations/MobilityFleet';
+import { CerecUnit } from './illustrations/CerecUnit';
 import { SkyWorld, CloudDeck, AirportHorizon } from './illustrations/SkyWorld';
 import { StreetSky, StreetHorizon } from './illustrations/StreetWorld';
+import { MobilitySky, MobilityHorizon } from './illustrations/MobilityWorld';
+import { ClinicSky, ClinicHorizon } from './illustrations/ClinicWorld';
 import { Instruments } from './components/Instruments';
 import { ProgressRail } from './components/ProgressRail';
 import { SceneCopy } from './components/SceneCopy';
 
-const [eurowings, flaschenpost] = experiences;
-const RUNWAY_STRIPES = Array.from({ length: 24 }, (_, i) => i);
-const EDGE_LIGHTS = Array.from({ length: 20 }, (_, i) => i);
+const byId = (id) => experiences.find((job) => job.id === id);
+const SCENE_COPY = [
+  byId('eurowings'),
+  byId('flaschenpost'),
+  byId('invers'),
+  byId('conze-lead'),
+];
+
+const MARKS = Array.from({ length: 24 }, (_, i) => i);
+const LIGHTS = Array.from({ length: 20 }, (_, i) => i);
+
+/** A full-bleed scene: sky, horizon, ground plane and the object on it. */
+function Scene({ id, opacity, groundClass, sky, horizon, marks, children }) {
+  return (
+    <div className="scene" data-scene={id} style={{ opacity }} aria-hidden="true">
+      {sky}
+      {horizon}
+      <div className={`ground ${groundClass}`}>
+        {marks}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+/** Positions one object on the shared ground line and moves it horizontally. */
+function Vehicle({ className, offsetPx, scale, opacity, children }) {
+  return (
+    <div className={`vehicle ${className}`}>
+      <div
+        className="vehicle__move"
+        style={{ opacity, transform: `translateX(${offsetPx}px)` }}
+      >
+        <div className="vehicle__inner" style={scale ? { transform: scale } : undefined}>
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function ScrollStory() {
   const trackRef = useRef(null);
@@ -24,88 +65,118 @@ export function ScrollStory() {
   return (
     <div className="track" ref={trackRef}>
       <div className="stage">
-        {/* ---------------- Scene 01 - Eurowings ---------------- */}
-        <div className="scene">
-          <SkyWorld />
-          <CloudDeck
-            opacity={frame.cloudDeckOpacity}
-            shiftVh={frame.cloudDeckShiftVh}
-            scale={frame.cloudDeckScale}
-          />
-          <AirportHorizon />
-          <div className="ground ground--runway">
-            <div className="edgelights" style={{ transform: `translateX(${frame.edgeLightShiftPx}px)` }}>
-              {EDGE_LIGHTS.map((i) => (
-                <i key={i} />
-              ))}
-            </div>
-            <div className="stripes stripes--runway" style={{ transform: `translateX(${frame.runwayShiftPx}px)` }}>
-              {RUNWAY_STRIPES.map((i) => (
-                <i key={i} />
-              ))}
-            </div>
-          </div>
-
+        {/* ---------------- 01 Eurowings Digital ---------------- */}
+        <Scene
+          id="eurowings"
+          opacity={frame.sceneOpacity.eurowings}
+          groundClass="ground--runway"
+          sky={<SkyWorld />}
+          horizon={
+            <>
+              <CloudDeck
+                opacity={frame.cloudDeckOpacity}
+                shiftVh={frame.cloudDeckShiftVh}
+                scale={frame.cloudDeckScale}
+              />
+              <AirportHorizon />
+            </>
+          }
+          marks={
+            <>
+              <div className="edgelights" style={{ transform: `translateX(${frame.edgeLightShiftPx}px)` }}>
+                {LIGHTS.map((i) => <i key={i} />)}
+              </div>
+              <div className="stripes stripes--runway" style={{ transform: `translateX(${frame.runwayShiftPx}px)` }}>
+                {MARKS.map((i) => <i key={i} />)}
+              </div>
+            </>
+          }
+        >
           <div className="vehicle vehicle--plane">
             <div
               className="vehicle__move"
               style={{
-                opacity: frame.planeOpacity,
                 transform: `translateY(${frame.planeOffsetVh}vh) rotate(${frame.planePitchDeg}deg)`,
               }}
             >
-              <div
-                className={`vehicle__inner${frame.isGrounded ? ' is-grounded' : ''}`}
-                style={{ transform: `scale(${frame.planeScaleX}, ${frame.planeScaleY})` }}
-              >
+              <div className={`vehicle__inner${frame.isGrounded ? ' is-grounded' : ''}`}>
                 <Aircraft frame={frame} />
               </div>
             </div>
           </div>
-        </div>
+        </Scene>
 
-        {/* ---------------- Scene 02 - Flaschenpost ---------------- */}
-        <div className="scene" style={{ opacity: frame.streetOpacity }}>
-          <StreetSky />
-          <StreetHorizon />
-          <div className="ground ground--street">
+        {/* ---------------- 02 Flaschenpost ---------------- */}
+        <Scene
+          id="flaschenpost"
+          opacity={frame.sceneOpacity.flaschenpost}
+          groundClass="ground--street"
+          sky={<StreetSky />}
+          horizon={<StreetHorizon />}
+          marks={
             <div className="stripes stripes--road" style={{ transform: `translateX(${frame.roadShiftPx}px)` }}>
-              {RUNWAY_STRIPES.map((i) => (
-                <i key={i} />
-              ))}
+              {MARKS.map((i) => <i key={i} />)}
             </div>
-          </div>
+          }
+        >
+          <Vehicle className="vehicle--van" offsetPx={frame.vanOffsetPx}>
+            <Van frame={frame} />
+          </Vehicle>
+        </Scene>
 
-          <div className="vehicle vehicle--van">
-            <div className="vehicle__move" style={{ transform: `translateX(${frame.vanEntryPx}px)` }}>
-              <div
-                className="vehicle__inner"
-                style={{ transform: `scale(${frame.vanScaleX}, ${frame.vanScaleY})` }}
-              >
-                <Van frame={frame} />
-              </div>
+        {/* ---------------- 03 INVERS ---------------- */}
+        <Scene
+          id="invers"
+          opacity={frame.sceneOpacity.invers}
+          groundClass="ground--city"
+          sky={<MobilitySky />}
+          horizon={<MobilityHorizon />}
+          marks={
+            <div className="stripes stripes--road" style={{ transform: `translateX(${frame.streetShiftPx}px)` }}>
+              {MARKS.map((i) => <i key={i} />)}
             </div>
-          </div>
-        </div>
+          }
+        >
+          <Vehicle className="vehicle--fleet" offsetPx={frame.fleetOffsetPx}>
+            <MobilityFleet frame={frame} />
+          </Vehicle>
+        </Scene>
 
-        {/* ---------------- Chrome ---------------- */}
+        {/* ---------------- 04 Conze Informatik ---------------- */}
+        <Scene
+          id="conze"
+          opacity={frame.sceneOpacity.conze}
+          groundClass="ground--clinic"
+          sky={<ClinicSky />}
+          horizon={<ClinicHorizon />}
+          marks={
+            <div className="stripes stripes--floor" style={{ transform: `translateX(${frame.floorShiftPx}px)` }}>
+              {MARKS.map((i) => <i key={i} />)}
+            </div>
+          }
+        >
+          <Vehicle className="vehicle--cerec" offsetPx={frame.cerecOffsetPx}>
+            <CerecUnit frame={frame} />
+          </Vehicle>
+        </Scene>
+
+        {/* ---------------- chrome ---------------- */}
         <div className="hud brandmark">
           <b>{profile.name}</b>
           <span>
             {profile.role} · {profile.location}
           </span>
-          {/* Visible in the first frame, so the fast path is found without
-              having to scroll the story to discover it. */}
           <a className="quickview" href="#/cv">
             Quick view ↗
           </a>
         </div>
 
-        <Instruments altitude={frame.altitude} gear={frame.gear} status={frame.status} />
+        <Instruments rows={frame.instruments} />
 
         <div className="copy-deck">
-          <SceneCopy scene={eurowings} opacity={frame.copyOutOpacity} />
-          <SceneCopy scene={flaschenpost} opacity={frame.copyInOpacity} />
+          {SCENE_COPY.map((scene) => (
+            <SceneCopy key={scene.id} scene={scene} opacity={frame.copyOpacity[scene.id.split('-')[0]]} />
+          ))}
         </div>
 
         <ProgressRail activeIndex={frame.activeSceneIndex} />

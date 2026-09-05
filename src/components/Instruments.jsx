@@ -1,19 +1,17 @@
-/** Flight-deck readouts that track the approach. */
-export function Instruments({ altitude, gear, status }) {
+/**
+ * The readout panel. Rows are supplied by the choreography and re-labelled per
+ * scene, so the instruments always describe the world currently on screen -
+ * altitude in the air, route on the road, telemetry for the fleet.
+ */
+export function Instruments({ rows }) {
   return (
     <div className="hud instruments">
-      <div className="readout">
-        <i>Altitude</i>
-        <b>{altitude}</b>
-      </div>
-      <div className="readout readout--optional">
-        <i>Gear</i>
-        <b>{gear}</b>
-      </div>
-      <div className="readout readout--optional">
-        <i>Status</i>
-        <b>{status}</b>
-      </div>
+      {rows.map((row, index) => (
+        <div key={row.label} className={`readout${index > 0 ? ' readout--optional' : ''}`}>
+          <i>{row.label}</i>
+          <b>{row.value}</b>
+        </div>
+      ))}
     </div>
   );
 }

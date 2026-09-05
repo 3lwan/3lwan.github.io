@@ -67,7 +67,7 @@ export const experiences = [
   {
     id: 'invers',
     company: 'INVERS',
-    display: ['IN', 'VERS'],
+    display: ['INVERS'],
     title: 'Backend Developer',
     period: 'Jul 2020 – Jun 2022',
     ticket: 'Stop 03 · INVERS · Jul 2020 – Jun 2022',
@@ -149,12 +149,12 @@ export const skills = [
   { name: 'Kubernetes', level: 1 },
 ];
 
-/** The full seven-scene story. Scenes 3-7 are not built yet (Phases 3-4). */
+/** The full seven-scene story. Scenes 5-7 are not built yet (Phase 4). */
 export const sceneRail = [
   { label: 'Eurowings Digital', built: true },
   { label: 'Flaschenpost', built: true },
-  { label: 'INVERS', built: false },
-  { label: 'Conze Informatik', built: false },
+  { label: 'INVERS', built: true },
+  { label: 'Conze Informatik', built: true },
   { label: 'Education', built: false },
   { label: 'Languages', built: false },
   { label: 'Contact', built: false },

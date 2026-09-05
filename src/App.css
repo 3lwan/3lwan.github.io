@@ -3,7 +3,8 @@
    ============================================================ */
 .track {
   position: relative;
-  height: 520vh;
+  /* four scenes, each with a hold and a hand-off */
+  height: 900vh;
 }
 
 .stage {
@@ -103,6 +104,27 @@
   background: linear-gradient(#2a3220 0%, #1b2115 45%, #10140c 100%);
 }
 
+.ground--city {
+  background: linear-gradient(#123049 0%, #0a1e30 45%, #050f1a 100%);
+}
+
+/* Every scene keeps a dark foreground: the copy is cream, and a light clinic
+   floor left it unreadable. The walls above stay bright and clinical. */
+.ground--clinic {
+  background: linear-gradient(#1c5568 0%, #0e3242 45%, #061c25 100%);
+}
+
+.stripes--floor {
+  top: 12%;
+}
+
+.stripes--floor i {
+  height: 3px;
+  width: 210px;
+  background: #9fd0dd;
+  opacity: 0.35;
+}
+
 .stripes {
   position: absolute;
   left: -50%;
@@ -182,6 +204,19 @@
   width: min(68vw, 1060px);
   transform: translate(-50%, 14.8%);
   filter: drop-shadow(0 18px 20px rgba(6, 10, 3, 0.6));
+}
+
+/* every ground object contacts at y=392 of a 460-tall viewBox -> 14.8% */
+.vehicle--fleet {
+  width: min(72vw, 1140px);
+  transform: translate(-50%, 14.8%);
+  filter: drop-shadow(0 18px 22px rgba(2, 12, 26, 0.6));
+}
+
+.vehicle--cerec {
+  width: min(38vw, 520px);
+  transform: translate(-50%, 14.8%);
+  filter: drop-shadow(0 16px 24px rgba(8, 30, 40, 0.5));
 }
 
 .vehicle__move {

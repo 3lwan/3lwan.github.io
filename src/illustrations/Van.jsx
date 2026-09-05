@@ -79,7 +79,7 @@ function Roundel({ cx = 470, cy = 298, r = 78 }) {
 }
 
 export function Van({ frame }) {
-  const { wheelSpinDeg } = frame;
+  const { vanWheelDeg } = frame;
   return (
     <svg viewBox="0 0 1200 460" aria-hidden="true" focusable="false">
       <defs>
@@ -159,7 +159,7 @@ export function Van({ frame }) {
 
       <g id="wheels">
         {WHEELS.map((w) => (
-          <Wheel key={w.id} id={w.id} cx={w.cx} spinDeg={wheelSpinDeg} />
+          <Wheel key={w.id} id={w.id} cx={w.cx} spinDeg={vanWheelDeg} />
         ))}
       </g>
     </svg>

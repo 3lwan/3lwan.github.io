@@ -25,8 +25,12 @@ export function SceneCopy({ scene, opacity }) {
       </div>
       <h2>
         {scene.display[0]}
-        <br />
-        {scene.display[1]}
+        {scene.display[1] ? (
+          <>
+            <br />
+            {scene.display[1]}
+          </>
+        ) : null}
       </h2>
       <h3>{scene.title}</h3>
       <ul>

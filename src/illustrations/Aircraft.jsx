@@ -20,7 +20,7 @@ const DOORS = [
 ];
 
 export function Aircraft({ frame }) {
-  const { gearMainDeg, gearNoseDeg, spoilerDeg, smokeOpacity, smokeScale } = frame;
+  const { gearMainDeg, gearNoseDeg, gearOpacity, spoilerDeg, smokeOpacity, smokeScale } = frame;
 
   return (
     <svg viewBox="0 0 1200 460" aria-hidden="true" focusable="false">
@@ -75,6 +75,7 @@ export function Aircraft({ frame }) {
           transformBox: 'view-box',
           transformOrigin: '1012px 254px',
           transform: `rotate(${gearNoseDeg}deg)`,
+          opacity: gearOpacity,
         }}
       >
         <rect x="1005" y="250" width="14" height="66" rx="6" fill="#8D8A88" stroke="#4A4144" strokeWidth="2" />
@@ -131,6 +132,7 @@ export function Aircraft({ frame }) {
           transformBox: 'view-box',
           transformOrigin: '530px 256px',
           transform: `rotate(${gearMainDeg}deg)`,
+          opacity: gearOpacity,
         }}
       >
         <path d="M508,250 h44 v14 h-44 z" fill="#C9BDBA" stroke="#4A4144" strokeWidth="2" />
@@ -151,9 +153,10 @@ export function Aircraft({ frame }) {
 
       <g
         id="smoke"
-        fill="#F0E6E2"
+        fill="#FBF2EE"
         style={{
-          opacity: smokeOpacity,
+          /* tyre smoke should read as thin dust, not solid shapes */
+          opacity: smokeOpacity * 0.5,
           transformBox: 'fill-box',
           transformOrigin: 'center',
           transform: `scale(${smokeScale})`,

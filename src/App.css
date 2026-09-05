@@ -66,11 +66,13 @@
   position: absolute;
   left: 0;
   right: 0;
-  bottom: var(--ground);
+  /* sits above the horizon, not down over the copy block */
+  bottom: calc(var(--ground) + 10vh);
   width: 100%;
-  height: 34vh;
+  height: 26vh;
   display: block;
   z-index: 2;
+  opacity: 0.6;
 }
 
 /* ---- shared ground plane ---- */
@@ -121,11 +123,11 @@
 }
 
 .stripes--runway {
-  top: 44%;
+  top: 7%;
 }
 
 .stripes--road {
-  top: 52%;
+  top: 7%;
 }
 
 .stripes--road i {
@@ -136,7 +138,8 @@
 .edgelights {
   position: absolute;
   left: -50%;
-  top: 12%;
+  /* just beyond the wheels, at the near edge of the runway */
+  top: 17%;
   width: 200%;
   display: flex;
   gap: 150px;
@@ -145,11 +148,11 @@
 
 .edgelights i {
   flex: none;
-  width: 9px;
-  height: 9px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: #ffd98a;
-  box-shadow: 0 0 14px 4px rgba(255, 217, 138, 0.55);
+  box-shadow: 0 0 10px 3px rgba(255, 217, 138, 0.4);
 }
 
 /* ---- vehicles, both hung off the same ground line ---- */
@@ -170,13 +173,13 @@
 /* offsets place each vehicle's wheels exactly on --ground:
    aircraft contact y=350/460 -> 23.9% | van contact y=392/460 -> 14.8% */
 .vehicle--plane {
-  width: min(76vw, 1220px);
+  width: min(70vw, 1120px);
   transform: translate(-50%, 23.9%);
   filter: drop-shadow(0 24px 30px rgba(10, 4, 14, 0.45));
 }
 
 .vehicle--van {
-  width: min(74vw, 1160px);
+  width: min(68vw, 1060px);
   transform: translate(-50%, 14.8%);
   filter: drop-shadow(0 18px 20px rgba(6, 10, 3, 0.6));
 }
@@ -286,11 +289,28 @@
 
 .copy-deck {
   position: absolute;
+  isolation: isolate;
   z-index: 9;
   left: clamp(18px, 3.4vw, 44px);
   bottom: clamp(26px, 6vh, 64px);
   width: min(37rem, 72vw);
   min-height: 20rem;
+}
+
+/* The copy sits over illustration that changes throughout the scroll, so it
+   carries its own ground rather than depending on what happens to be behind. */
+.copy-deck::before {
+  content: '';
+  position: absolute;
+  inset: -34px -120px -40px -48px;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    115% 105% at 0% 100%,
+    rgba(6, 3, 9, 0.9) 0%,
+    rgba(6, 3, 9, 0.72) 42%,
+    rgba(6, 3, 9, 0) 76%
+  );
 }
 
 .copy {
@@ -625,10 +645,21 @@
 }
 
 .linear__job ul {
+  /* Tailwind's preflight sets `ol, ul, menu { list-style: none }` globally, so
+     the marker has to be restored explicitly or the bullets vanish. */
+  list-style: disc;
   margin: 10px 0 0;
-  padding-left: 18px;
+  padding-left: 21px;
   line-height: 1.6;
   opacity: 0.85;
+}
+
+.linear__job li::marker {
+  color: rgba(246, 239, 234, 0.55);
+}
+
+.linear__job li {
+  padding-left: 3px;
 }
 
 .linear__languages {

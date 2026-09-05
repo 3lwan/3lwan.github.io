@@ -83,6 +83,22 @@ describe('frameAt', () => {
     }
   });
 
+  test('there is never a window with no copy on screen at all', () => {
+    // Regression: the outgoing block finished at .76 and the incoming one only
+    // began at .80, leaving a stretch of scroll showing an empty scene.
+    for (let p = 0; p <= 1; p += 0.005) {
+      const f = frameAt(p);
+      const visible = Math.max(f.copyOutOpacity, f.copyInOpacity);
+      expect(visible, `no copy visible at p=${p.toFixed(3)}`).toBeGreaterThan(0.25);
+    }
+  });
+
+  test('the aircraft is gone before the van finishes arriving', () => {
+    const settled = frameAt(0.84);
+    expect(settled.planeOpacity).toBe(0);
+    expect(settled.streetOpacity).toBe(1);
+  });
+
   test('wheels roll forward, never backward', () => {
     let previous = 0;
     for (let p = 0; p <= 1; p += 0.02) {
@@ -106,5 +122,25 @@ describe('frameAt', () => {
         }
       }
     }
+  });
+});
+
+describe('gear visibility matches the instruments', () => {
+  test('gear is not drawn while the readout says Up', () => {
+    const f = frameAt(0.1);
+    expect(f.gear).toBe('Up');
+    expect(f.gearOpacity).toBe(0);
+  });
+
+  test('gear is fully drawn by the time it is down and locked', () => {
+    const f = frameAt(0.3);
+    expect(f.gear).toBe('Down · locked');
+    expect(f.gearOpacity).toBe(1);
+  });
+
+  test('gear stays visible through touchdown and roll-out', () => {
+    [0.55, 0.7, 0.9, 1].forEach((p) => {
+      expect(frameAt(p).gearOpacity).toBe(1);
+    });
   });
 });

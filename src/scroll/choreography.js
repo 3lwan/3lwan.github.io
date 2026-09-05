@@ -49,12 +49,15 @@ export function frameAt(progress, viewportWidth = 1440) {
     // aircraft
     gearMainDeg: lerp(-84, 0, easeOut(config)),
     gearNoseDeg: lerp(78, 0, easeOut(config)),
+    // retracted gear is inside the airframe, so it must not be drawn at all
+    // while the instruments read "Up"
+    gearOpacity: segment(config, 0, 0.18),
     spoilerDeg: -touch * 42,
     smokeOpacity: touch * (1 - segment(p, 0.56, 0.63)),
     smokeScale: 1 + touch * 1.5,
     planeOffsetVh: lerp(-30, 0, sink),
     planePitchDeg: lerp(-2.2, -1.2, config) + flare * 5.5 - roll * 4.6,
-    planeOpacity: 1 - segment(hand, 0.25, 0.9),
+    planeOpacity: 1 - segment(hand, 0.05, 0.5),
     planeScaleX: lerp(1, 0.95, hand),
     planeScaleY: lerp(1, 0.86, hand),
     isGrounded: p > 0.55,
@@ -65,7 +68,7 @@ export function frameAt(progress, viewportWidth = 1440) {
     cloudDeckScale: 1 + segment(p, 0.16, 0.46) * 0.5,
     runwayShiftPx: -(groundPx % 270),
     edgeLightShiftPx: -(groundPx % 159),
-    streetOpacity: segment(hand, 0.15, 0.85),
+    streetOpacity: segment(hand, 0.1, 0.6),
     roadShiftPx: -(distanceCoveredPx % 270),
 
     // van
@@ -75,8 +78,8 @@ export function frameAt(progress, viewportWidth = 1440) {
     wheelSpinDeg,
 
     // copy + chrome
-    copyOutOpacity: 1 - segment(p, 0.62, 0.76),
-    copyInOpacity: segment(p, 0.8, 0.92),
+    copyOutOpacity: 1 - segment(p, 0.58, 0.76),
+    copyInOpacity: segment(p, 0.66, 0.84),
     activeSceneIndex: p < 0.78 ? 0 : 1,
     cueOpacity: 1 - segment(p, 0.02, 0.12),
 

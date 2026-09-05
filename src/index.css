@@ -10,7 +10,7 @@
   --mono: 'DM Mono', ui-monospace, Menlo, monospace;
   /* Shared ground line. Both vehicles are positioned from this, which is what
      lets the van take over exactly where the aircraft finished its roll-out. */
-  --ground: 26vh;
+  --ground: 40vh;
 }
 
 html {

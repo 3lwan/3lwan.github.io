@@ -34,10 +34,17 @@ function Detail({ detail }) {
 
 export function SceneCopy({ scene, opacity }) {
   const multiRole = scene.roles.length > 1;
+  const classes = ['copy'];
+  if (multiRole) classes.push('copy--dense');
+  // scenes whose copy runs tall enough to climb into the illustration
+  if (scene.layout === 'aside') classes.push('copy--aside');
+  // scenes whose copy is short, so it can sit closer to the horizon
+  if (scene.layout === 'lifted') classes.push('copy--lifted');
 
   return (
     <article
-      className={`copy${multiRole ? ' copy--dense' : ''}`}
+      className={classes.join(' ')}
+      data-scene={scene.id}
       style={{
         opacity,
         transform: `translateY(${(1 - opacity) * 18}px)`,
@@ -59,20 +66,30 @@ export function SceneCopy({ scene, opacity }) {
         ) : null}
       </h2>
 
-      <div className="copy__roles">
-        {scene.roles.map((role) => (
-          <div className="copy__role" key={role.id}>
-            <h3>
-              {role.title}
-              {multiRole && <span className="copy__period">{role.period}</span>}
-            </h3>
-            <ul>
-              {role.details.map((detail) => (
-                <Detail key={typeof detail === 'string' ? detail : detail.text} detail={detail} />
-              ))}
-            </ul>
+      <div className="copy__body">
+        <div className="copy__roles">
+          {scene.roles.map((role) => (
+            <div className="copy__role" key={role.id}>
+              <h3>
+                {role.title}
+                {multiRole && <span className="copy__period">{role.period}</span>}
+              </h3>
+              <ul>
+                {role.details.map((detail) => (
+                  <Detail key={typeof detail === 'string' ? detail : detail.text} detail={detail} />
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        {scene.stack.length > 0 && (
+          <div className="chips">
+            {scene.stack.map((tech) => (
+              <SkillBadge key={tech.name} label={tech.label} name={tech.name} level={tech.level} />
+            ))}
           </div>
-        ))}
+        )}
       </div>
 
       {scene.links && (
@@ -93,13 +110,6 @@ export function SceneCopy({ scene, opacity }) {
         </div>
       )}
 
-      {scene.stack.length > 0 && (
-        <div className="chips">
-          {scene.stack.map((tech) => (
-            <SkillBadge key={tech.name} label={tech.label} name={tech.name} level={tech.level} />
-          ))}
-        </div>
-      )}
       {scene.roles.some((role) => role.placeholder) && (
         <p className="placeholder">
           Placeholder scene — send the title, start date, responsibilities and stack to

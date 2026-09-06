@@ -222,6 +222,8 @@ export const storyScenes = [
     id: 'flaschenpost',
     display: ['Flaschen', 'post'],
     ticket: 'Drop 02 · Flaschenpost · Jun 2022 – Sep 2024',
+    // long stack, so the badges sit beside the copy rather than under it
+    layout: 'aside',
     roles: [job('flaschenpost')],
     stack: job('flaschenpost').stack,
   },
@@ -229,6 +231,7 @@ export const storyScenes = [
     id: 'invers',
     display: ['INVERS'],
     ticket: 'Stop 03 · INVERS · Jul 2020 – Jun 2022',
+    layout: 'lifted',
     roles: [job('invers')],
     stack: job('invers').stack,
   },
@@ -236,6 +239,8 @@ export const storyScenes = [
     id: 'conze',
     display: ['Conze', 'Informatik'],
     ticket: 'Stop 04 · Conze Informatik · Nov 2017 – Jul 2020',
+    // two roles plus a stack, the tallest block in the story
+    layout: 'aside',
     roles: [job('conze-lead'), job('conze-dev')],
     // both roles' technologies, de-duplicated, then ordered like every other stack
     // pick() builds a fresh object per call, so de-duplicate on the label
@@ -247,6 +252,7 @@ export const storyScenes = [
     id: 'education',
     display: ['Education'],
     ticket: 'Stop 05 · Siegen & Cairo · 2007 – 2017',
+    layout: 'lifted',
     roles: education.map((item) => ({
       id: item.degree,
       title: item.degree,
@@ -260,6 +266,7 @@ export const storyScenes = [
     id: 'languages',
     display: ['Languages'],
     ticket: 'Stop 06 · Arabic · English · German',
+    layout: 'lifted',
     roles: [
       {
         id: 'languages',

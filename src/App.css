@@ -497,9 +497,84 @@
   margin-top: 14px;
 }
 
+/* Scenes whose copy is short enough that a bottom-anchored block leaves a
+   dead band between the horizon and the ticket. Lifting them closes it. */
+.copy--lifted {
+  bottom: clamp(34px, 6.5vh, 78px);
+}
+
+/* Education is the shortest block in the story - no badges, and one line per
+   degree - so the shared lift still leaves it hanging well below the horizon.
+   It gets a deeper one, which puts its ticket the same distance under the
+   ground line as INVERS and Languages. */
+.copy--lifted[data-scene='education'] {
+  bottom: clamp(58px, 12vh, 132px);
+}
+
+/* The tall scenes - Flaschenpost's eight badges, Conze's two roles - ran up
+   into the illustration when the badges sat under the copy. Beside it, the
+   block loses a whole row and the ticket stays below the horizon. */
+.copy--aside .copy__body {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(16px, 2.2vw, 32px);
+}
+
+.copy--aside .copy__roles {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* A fixed badge grid rather than a wrapping row: the column keeps the same
+   width whatever the scene carries, and stays roughly as tall as the
+   responsibilities beside it instead of towering over them. */
+.copy--aside .chips {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  justify-content: start;
+  margin-top: 15px;
+}
+
+/* Conze already spends its width on two roles, so its badges stack narrower
+   and align with the first role's heading rather than the top of the block. */
+.copy--dense.copy--aside .chips {
+  grid-template-columns: repeat(2, auto);
+  margin-top: 9px;
+}
+
+/* With the badges taking a column, an even split would wrap the longer role's
+   responsibilities - the lead role gets the wider share instead. */
+.copy--dense.copy--aside .copy__roles {
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+}
+
+/* The badge grid takes width the responsibilities used to have, so a
+   single-role aside scene widens enough to keep its longest line unwrapped. */
+.copy--aside:not(.copy--dense) {
+  width: min(51rem, 84vw);
+}
+
+.copy--aside:not(.copy--dense) ul {
+  max-width: none;
+}
+
 @media (max-width: 900px) {
   .copy--dense .copy__roles {
     grid-template-columns: 1fr;
+  }
+
+  .copy--aside .copy__body {
+    display: block;
+  }
+
+  .copy--aside .chips {
+    display: flex;
+    margin-top: 20px;
+  }
+
+  .copy--aside:not(.copy--dense) {
+    width: min(37rem, 72vw);
   }
 }
 

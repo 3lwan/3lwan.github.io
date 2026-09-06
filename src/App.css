@@ -250,7 +250,7 @@
 }
 
 .vehicle--signpost {
-  width: min(46vw, 700px);
+  width: min(70vw, 1100px);
   transform: translate(-50%, 14.8%);
   filter: drop-shadow(0 16px 22px rgba(6, 12, 26, 0.5));
 }

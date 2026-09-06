@@ -128,7 +128,7 @@
 
 .stripes--floor {
   /* close under the unit, clear of the copy block below */
-  top: 5%;
+  top: max(0px, min(5%, calc(100% - 27rem)));
 }
 
 .stripes--floor i {
@@ -157,12 +157,17 @@
   opacity: 0.55;
 }
 
+/* The ground band scales with the viewport (--ground is 40vh) but a copy block
+   is sized by its text, so its height barely moves. Below roughly 1150px tall
+   the two collide and the marks end up running through the ticket. Every mark
+   therefore rides up as the band shrinks, staying above the space the copy
+   reserves, and stops at the ground's leading edge rather than crossing it. */
 .stripes--runway {
-  top: 7%;
+  top: max(0px, min(7%, calc(100% - 27.5rem)));
 }
 
 .stripes--road {
-  top: 7%;
+  top: max(0px, min(7%, calc(100% - 25rem)));
 }
 
 .stripes--road i {
@@ -173,8 +178,9 @@
 .edgelights {
   position: absolute;
   left: -50%;
-  /* just beyond the wheels, at the near edge of the runway */
-  top: 17%;
+  /* just beyond the wheels, at the near edge of the runway - and, on a short
+     viewport, above the copy rather than glowing through its ticket */
+  top: max(34px, min(17%, calc(100% - 25rem)));
   width: 200%;
   display: flex;
   gap: 150px;
@@ -515,6 +521,14 @@
    ground line as INVERS and Languages. */
 .copy--lifted[data-scene='education'] {
   bottom: clamp(58px, 12vh, 132px);
+}
+
+/* Conze is the tallest block in the story, and its ground band has only about
+   ten pixels to spare above it once the floor marks have ridden up as far as
+   the ground's leading edge. It sinks a little so the marks clear its ticket -
+   in vh, so a shorter viewport sinks it less rather than off the bottom. */
+.copy[data-scene='conze'] {
+  bottom: clamp(-26px, -2.4vh, -10px);
 }
 
 /* The tall scenes - Flaschenpost's eight badges, Conze's two roles - ran up

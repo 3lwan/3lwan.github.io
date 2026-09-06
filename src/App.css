@@ -574,47 +574,128 @@
 .chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  /* the shields are pointed, so they need more air than the old chips did */
+  gap: 16px 12px;
   margin-top: 20px;
 }
 
-.chip {
+/* ---- Skill badges ------------------------------------------------------- */
+
+/* The shield: square shoulders, a point at the bottom. Clipped on .badge__face
+   rather than .badge, so the tooltip can escape the clip. */
+.badge {
+  --shield: polygon(0 0, 100% 0, 100% 72%, 50% 100%, 0 72%);
+  --badge-w: 74px;
   position: relative;
-  overflow: hidden;
+  display: inline-block;
+  width: var(--badge-w);
+  font-family: var(--mono);
+}
+
+.badge__face {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  /* bottom padding clears the shield's point, so the stars never sit in it */
+  padding: 11px 5px 19px;
+  clip-path: var(--shield);
+  background:
+    linear-gradient(180deg, rgba(246, 239, 234, 0.16), rgba(246, 239, 234, 0.04) 58%),
+    rgba(12, 8, 16, 0.5);
+  transition: transform 0.28s ease, filter 0.28s ease;
+}
+
+/* drop-shadow, not box-shadow: box-shadow is drawn outside the clip and lost */
+.badge:hover .badge__face {
+  transform: translateY(-3px);
+  filter: drop-shadow(0 7px 14px rgba(6, 3, 9, 0.7));
+}
+
+.badge__label {
+  font-size: 10.5px;
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  text-align: center;
+  color: rgba(246, 239, 234, 0.92);
+  overflow-wrap: anywhere;
+}
+
+.badge__stars {
+  display: flex;
+  gap: 1.5px;
+}
+
+.badge__star {
+  width: 7px;
+  height: 7px;
+  fill: rgba(246, 239, 234, 0.2);
+}
+
+.badge__star--on {
+  fill: var(--level-color);
+}
+
+.badge__tip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 7px);
+  z-index: 8;
   padding: 4px 9px;
   border: 1px solid rgba(246, 239, 234, 0.28);
   border-radius: 2px;
-  background: rgba(12, 8, 16, 0.45);
-  color: rgba(246, 239, 234, 0.9);
-  font-family: var(--mono);
-  font-size: 10.5px;
-  letter-spacing: 0.09em;
-}
-
-.chip__label {
-  position: relative;
-  z-index: 1;
-  transition: color 0.3s ease;
-}
-
-.chip__fill {
-  position: absolute;
-  inset: 0;
+  background: rgba(8, 4, 10, 0.94);
+  color: rgba(246, 239, 234, 0.95);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
   opacity: 0;
-  transition: opacity 0.3s ease;
-  background: linear-gradient(
-    to right,
-    var(--skill-color) var(--skill-fill),
-    transparent var(--skill-fill)
-  );
+  pointer-events: none;
+  transform: translate(-50%, 4px);
+  transition: opacity 0.22s ease, transform 0.22s ease;
 }
 
-.chip--rated:hover .chip__fill {
+.badge:hover .badge__tip {
   opacity: 1;
+  transform: translate(-50%, 0);
 }
 
-.chip--rated:hover .chip__label {
-  color: var(--skill-text);
+/* Present for assistive tech and print, invisible on screen - the tooltip is
+   hover-only, so this is the badge's only accessible name. */
+.badge__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Scene badges sit over the illustration next to the copy, so they run smaller
+   than the ones in the quick-view CV, which has a page to itself - small enough
+   that the longest stack (Eurowings, eight of them) stays on one line. */
+.copy .chips {
+  gap: 13px 10px;
+}
+
+.copy .badge {
+  --badge-w: 62px;
+}
+
+.linear .badge {
+  --badge-w: 88px;
+}
+
+@media (max-width: 900px) {
+  .copy .badge {
+    --badge-w: 58px;
+  }
+
+  .copy .badge__label {
+    font-size: 9.5px;
+  }
 }
 
 .placeholder {
@@ -926,5 +1007,30 @@
 
   .linear__languages li {
     background: #f2f2f2;
+  }
+
+  /* A printed CV should not read "K8s ***": drop the shield and the face text,
+     and let the assistive-tech line ("Kubernetes - 1 out of 5") show instead. */
+  .chips {
+    gap: 4px 14px;
+  }
+
+  .badge {
+    width: auto;
+    font-size: 10px;
+  }
+
+  .badge__face,
+  .badge__tip {
+    display: none;
+  }
+
+  .badge__sr {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+    clip-path: none;
   }
 }

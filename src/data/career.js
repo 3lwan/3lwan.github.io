@@ -20,7 +20,7 @@ export const profile = {
 
 /**
  * Every technology named anywhere on the CV, with its display name and its
- * proficiency (1-5, which drives the hover fill on SkillChip).
+ * proficiency (1-5, which the badge shows as stars).
  *
  * Jobs and the skills section both resolve their chips through pick(), so a
  * technology cannot end up spelled or rated two different ways: ".NET" is one
@@ -28,17 +28,18 @@ export const profile = {
  * this file used to carry.
  */
 const SKILLS = {
-  DotNet: { name: '.NET', level: 5 },
+  '.NET': { name: '.NET', level: 5 },
   xUnit: { name: 'xUnit', level: 5 },
   REST: { name: 'REST APIs', level: 5 },
   Git: { name: 'Git', level: 5 },
   GitHub: { name: 'GitHub', level: 4 },
   GitLab: { name: 'GitLab', level: 4 },
   AI: { name: 'AI', level: 4 },
-  Microservices: { name: 'Microservices', level: 4 },
+  MSA: { name: 'Microservices', level: 4 },
   Blazor: { name: 'Blazor', level: 4 },
   Docker: { name: 'Docker', level: 4 },
-  'HTML/CSS': { name: 'HTML / CSS', level: 4 },
+  HTML: { name: 'HTML', level: 4 },
+  CSS: { name: 'CSS', level: 4 },
   WPF: { name: 'WPF', level: 4 },
   XAML: { name: 'XAML', level: 4 },
   Azure: { name: 'Azure', level: 3 },
@@ -49,26 +50,33 @@ const SKILLS = {
   MongoDB: { name: 'MongoDB', level: 3 },
   Python: { name: 'Python', level: 2 },
   Angular: { name: 'Angular', level: 2 },
-  Terraform: { name: 'Terraform', level: 2 },
+  TF: { name: 'Terraform', level: 2 },
   'C++': { name: 'C++', level: 2 },
   K8s: { name: 'Kubernetes', level: 1 },
   Helm: { name: 'Helm', level: 1 },
 };
 
-/** Resolve registry keys into the { name, level } objects the chips render. */
-const pick = (...keys) =>
-  keys.map((key) => {
-    const skill = SKILLS[key];
-    if (!skill) throw new Error(`Unknown skill: ${key}`);
-    return skill;
-  });
-
 /**
- * Chips that are not technologies - fields of study, spoken languages - carry
- * no level: a proficiency fill would mean nothing there, and the languages
- * already state Native/C1/B2 in their own section.
+ * Resolve registry keys into the badge props.
+ *
+ * The key doubles as the badge's face text, which is why it is spelled the way
+ * it should be read - the full `name` only appears in the badge tooltip and to
+ * assistive tech. It is passed as `label`, not `key`: React consumes a `key`
+ * prop when the object is spread into <SkillBadge/>.
  */
-const plainChips = (...names) => names.map((name) => ({ name }));
+const pick = (...keys) =>
+  keys
+    .map((key) => {
+      const skill = SKILLS[key];
+      if (!skill) throw new Error(`Unknown skill: ${key}`);
+      return { label: key, ...skill };
+    })
+    .sort(byRating);
+
+/** Strongest first, ties broken by the label the badge actually shows. */
+function byRating(a, b) {
+  return b.level - a.level || a.label.localeCompare(b.label);
+}
 
 /** Employers, newest first - the order the visitor scrolls through. */
 export const experiences = [
@@ -84,7 +92,7 @@ export const experiences = [
       'Shape features with the team, so what ships genuinely helps travellers',
       'Track API health on dashboards to catch and resolve problems quickly',
     ],
-    stack: pick('DotNet', 'Spring', 'Azure', 'GitHub', 'Terraform', 'AI', 'REST', 'gRPC'),
+    stack: pick('.NET', 'Spring', 'Azure', 'GitHub', 'TF', 'AI', 'REST', 'gRPC'),
     palette: { primary: '#871C54', accent: '#AF1E65', secondary: '#00A6CE' },
   },
   {
@@ -100,7 +108,7 @@ export const experiences = [
       'Worked directly with business customers on ERP system integration',
       "Designed and architected the team's projects",
     ],
-    stack: pick('DotNet', 'Blazor', 'JS', 'HTML/CSS', 'SQL', 'Azure', 'K8s'),
+    stack: pick('.NET', 'Blazor', 'JS', 'HTML', 'CSS', 'SQL', 'Azure', 'K8s'),
     palette: { primary: '#A50A50', accent: '#82BE3C', secondary: '#5A9632' },
   },
   {
@@ -111,7 +119,7 @@ export const experiences = [
     period: 'Jul 2020 – Jun 2022',
     ticket: 'Stop 03 · INVERS · Jul 2020 – Jun 2022',
     details: ['Maintaining existing microservices and creating new ones.'],
-    stack: pick('DotNet', 'Docker', 'K8s', 'Helm', 'GitLab', 'MongoDB'),
+    stack: pick('.NET', 'Docker', 'K8s', 'Helm', 'GitLab', 'MongoDB'),
     palette: { primary: '#00469C', accent: '#00C8AA', secondary: '#A4A4A4' },
   },
   {
@@ -129,7 +137,7 @@ export const experiences = [
       'Technical contact for customers',
       'Effort estimation for tasks',
     ],
-    stack: pick('DotNet', 'WPF', 'XAML'),
+    stack: pick('.NET', 'WPF', 'XAML'),
     palette: { primary: '#15779B', accent: '#333333', secondary: '#E6E6E6' },
   },
   {
@@ -141,7 +149,7 @@ export const experiences = [
     details: [
       '.NET software developer using C++, C# and XAML for desktop applications with WPF.',
     ],
-    stack: pick('DotNet', 'C++', 'WPF', 'XAML'),
+    stack: pick('.NET', 'C++', 'WPF', 'XAML'),
     palette: { primary: '#15779B', accent: '#333333', secondary: '#E6E6E6' },
   },
 ];
@@ -175,12 +183,12 @@ export const languages = [
  * (GitHub vs GitLab, Helm, WPF/XAML, C++, MongoDB).
  */
 export const skills = pick(
-  'DotNet',
+  '.NET',
   'xUnit',
   'REST',
   'Git',
   'AI',
-  'Microservices',
+  'MSA',
   'Blazor',
   'Docker',
   'Azure',
@@ -190,7 +198,7 @@ export const skills = pick(
   'gRPC',
   'Python',
   'Angular',
-  'Terraform',
+  'TF',
   'K8s'
 );
 
@@ -229,10 +237,11 @@ export const storyScenes = [
     display: ['Conze', 'Informatik'],
     ticket: 'Stop 04 · Conze Informatik · Nov 2017 – Jul 2020',
     roles: [job('conze-lead'), job('conze-dev')],
-    // both roles' technologies, de-duplicated, newest role first
-    stack: [...job('conze-lead').stack, ...job('conze-dev').stack].filter(
-      (tech, index, all) => all.indexOf(tech) === index
-    ),
+    // both roles' technologies, de-duplicated, then ordered like every other stack
+    // pick() builds a fresh object per call, so de-duplicate on the label
+    stack: [...job('conze-lead').stack, ...job('conze-dev').stack]
+      .filter((tech, index, all) => all.findIndex((other) => other.label === tech.label) === index)
+      .sort(byRating),
   },
   {
     id: 'education',
@@ -244,7 +253,8 @@ export const storyScenes = [
       period: `${item.school} · ${item.period}`,
       details: item.details,
     })),
-    stack: plainChips('Mechatronics', 'Engineering', 'Material Science'),
+    // no badges: a star rating would mean nothing for a field of study
+    stack: [],
   },
   {
     id: 'languages',
@@ -257,7 +267,8 @@ export const storyScenes = [
         details: languages.map((entry) => `${entry.language} — ${entry.level}`),
       },
     ],
-    stack: plainChips(...languages.map((entry) => entry.language)),
+    // no badges: the languages already state Native/C1/B2 in the copy above
+    stack: [],
   },
   {
     id: 'contact',

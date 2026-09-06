@@ -1,4 +1,4 @@
-import { SkillChip } from './SkillChip';
+import { SkillBadge } from './SkillBadge';
 
 /**
  * The text block for one scene. Real DOM text, never SVG text, so it stays
@@ -96,7 +96,7 @@ export function SceneCopy({ scene, opacity }) {
       {scene.stack.length > 0 && (
         <div className="chips">
           {scene.stack.map((tech) => (
-            <SkillChip key={tech.name} name={tech.name} level={tech.level} />
+            <SkillBadge key={tech.name} label={tech.label} name={tech.name} level={tech.level} />
           ))}
         </div>
       )}

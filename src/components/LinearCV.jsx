@@ -1,5 +1,5 @@
 import { profile, experiences, education, languages, skills } from '../data/career';
-import { SkillChip } from './SkillChip';
+import { SkillBadge } from './SkillBadge';
 
 /**
  * The whole CV as a plain, readable document.
@@ -68,7 +68,7 @@ export function LinearCV() {
         <h2>Skills</h2>
         <div className="chips">
           {skills.map((skill) => (
-            <SkillChip key={skill.name} {...skill} />
+            <SkillBadge key={skill.name} {...skill} />
           ))}
         </div>
       </section>

@@ -154,6 +154,13 @@ export const experiences = [
   },
 ];
 
+/**
+ * Where he works today. The identity card reads its name and colours from here
+ * rather than repeating them, so the card and the Eurowings scene can never
+ * drift apart: both resolve to the same entry in `experiences`.
+ */
+export const currentEmployer = experiences[0];
+
 export const education = [
   {
     degree: 'M.Sc. in Mechatronics Engineering',

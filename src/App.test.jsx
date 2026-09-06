@@ -1,7 +1,7 @@
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import App from './App';
 import { LinearCV } from './components/LinearCV';
-import { experiences, education, languages, skills, storyScenes } from './data/career';
+import { experiences, education, languages, skills, storyScenes, profile } from './data/career';
 
 /**
  * jsdom reports no matchMedia by default, and usePrefersReducedMotion reads it.
@@ -24,6 +24,14 @@ function mockReducedMotion(reduced) {
 beforeEach(() => mockReducedMotion(false));
 
 describe('App', () => {
+
+  test('the brandmark name opens the identity card', () => {
+    const { container } = render(<App />);
+
+    fireEvent.click(screen.getByRole('button', { name: profile.name }));
+
+    expect(container.querySelector('.idcard')).toBeInTheDocument();
+  });
   test('draws the scene stacks as badges', () => {
     const { container } = render(<App />);
 

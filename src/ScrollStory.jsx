@@ -23,6 +23,7 @@ import {
 import { Instruments } from './components/Instruments';
 import { ProgressRail } from './components/ProgressRail';
 import { SceneCopy } from './components/SceneCopy';
+import { IdentityBadge } from './components/IdentityBadge';
 
 
 const MARKS = Array.from({ length: 24 }, (_, i) => i);
@@ -210,7 +211,7 @@ export function ScrollStory() {
 
         {/* ---------------- chrome ---------------- */}
         <div className="hud brandmark">
-          <b>{profile.name}</b>
+          <IdentityBadge />
           <span>
             {profile.role} · {profile.location}
           </span>

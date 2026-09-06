@@ -316,11 +316,37 @@
   align-items: baseline;
 }
 
-.brandmark b {
+/* The name is a button now - it opens the identity card - but it has to keep
+   reading as the brandmark, so the button chrome is stripped back to text. */
+.brandmark__identity {
+  position: relative;
+}
+
+.brandmark__name {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
   font-family: var(--display);
   font-variation-settings: 'wdth' 118, 'wght' 800;
   font-size: 15px;
   letter-spacing: 0.16em;
+  text-transform: inherit;
+  cursor: pointer;
+  /* the only affordance: a rule that fills in on hover, so the name still
+     looks like a name rather than a control */
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.25s ease;
+}
+
+.brandmark__name:hover,
+.brandmark__name[aria-expanded='true'] {
+  border-bottom-color: rgba(246, 239, 234, 0.55);
+}
+
+.brandmark__name:focus-visible {
+  outline: 1px solid rgba(246, 239, 234, 0.7);
+  outline-offset: 4px;
 }
 
 .brandmark span {
@@ -872,6 +898,163 @@
   height: 24px;
   text-decoration: none;
   background: linear-gradient(rgba(246, 239, 234, 0.7), transparent);
+}
+
+/* ---- Identity card ------------------------------------------------------ */
+
+/* The employee pass behind the name: the skill badges' shield and mono type,
+   wearing the current employer's colours instead of the badges' neutral glass.
+   Colours arrive as custom properties from the employer entry in career.js, so
+   changing jobs recolours the card without touching this file. */
+.idcard {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 0;
+  z-index: 20;
+  width: 292px;
+  padding: 0 0 16px;
+  border: 1px solid color-mix(in srgb, var(--brand-accent) 55%, transparent);
+  border-radius: 3px;
+  /* the card floats over the illustration, so it needs a near-solid ground:
+     at 0.94 the aircraft read straight through the contact rows */
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--brand) 42%, transparent), transparent 46%),
+    rgba(10, 6, 13, 0.985);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 18px 40px rgba(6, 3, 9, 0.66);
+  text-transform: none;
+  letter-spacing: normal;
+  animation: idcard-in 0.24s ease both;
+}
+
+@keyframes idcard-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+/* the header strip carries the employer, the way a real pass does */
+.idcard__strip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 16px 12px;
+  border-bottom: 1px solid color-mix(in srgb, var(--brand-accent) 42%, transparent);
+}
+
+.idcard__mark svg {
+  display: block;
+  width: 34px;
+  height: auto;
+}
+
+.idcard__employer {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(246, 239, 234, 0.9);
+}
+
+.idcard__body {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 16px 14px;
+}
+
+/* the same silhouette the skill badges use, at pass-photo size */
+.idcard__shield {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 66px;
+  clip-path: polygon(0 0, 100% 0, 100% 72%, 50% 100%, 0 72%);
+  background: linear-gradient(180deg, var(--brand-accent), var(--brand));
+}
+
+.idcard__monogram {
+  /* lifted clear of the shield's point, the way the badge stars are */
+  margin-bottom: 12px;
+  font-family: var(--display);
+  font-variation-settings: 'wdth' 118, 'wght' 800;
+  font-size: 19px;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.idcard__who {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.idcard__who b {
+  font-family: var(--display);
+  font-variation-settings: 'wdth' 118, 'wght' 800;
+  font-size: 15px;
+  letter-spacing: 0.03em;
+  color: rgba(246, 239, 234, 0.96);
+}
+
+.idcard__who span {
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1.5;
+  letter-spacing: 0.07em;
+  color: rgba(246, 239, 234, 0.62);
+}
+
+.idcard__contacts {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding: 14px 16px 0;
+  border-top: 1px solid rgba(246, 239, 234, 0.12);
+  list-style: none;
+}
+
+.idcard__contacts li {
+  display: grid;
+  grid-template-columns: 62px 1fr;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.idcard__contacts i {
+  font-style: normal;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(246, 239, 234, 0.42);
+}
+
+.idcard__contacts a {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  color: rgba(246, 239, 234, 0.9);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid transparent;
+  transition: color 0.22s ease, border-color 0.22s ease;
+}
+
+.idcard__contacts a:hover,
+.idcard__contacts a:focus-visible {
+  /* the third brand colour, which the card otherwise never gets to use */
+  color: var(--brand-sky);
+  border-bottom-color: var(--brand-sky);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .idcard {
+    animation: none;
+  }
 }
 
 /* ---- entry point into the quick-view CV ---- */

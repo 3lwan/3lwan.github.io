@@ -362,12 +362,25 @@
   min-height: 20rem;
 }
 
+.copy {
+  position: absolute;
+  isolation: isolate;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+}
+
 /* The copy sits over illustration that changes throughout the scroll, so it
-   carries its own ground rather than depending on what happens to be behind. */
-.copy-deck::before {
+   carries its own ground rather than depending on what happens to be behind.
+
+   On the copy rather than the deck: scenes set their own width - the ones that
+   put the badges beside the text run wider than the deck - so a pool sized to
+   the deck left the outer badges standing on bare illustration. Sized to the
+   block, it also fades with the block instead of sitting under every scene. */
+.copy::before {
   content: '';
   position: absolute;
-  inset: -34px -120px -40px -48px;
+  inset: -30px -58px -38px -46px;
   z-index: -1;
   pointer-events: none;
   background: radial-gradient(
@@ -376,13 +389,6 @@
     rgba(6, 3, 9, 0.72) 42%,
     rgba(6, 3, 9, 0) 76%
   );
-}
-
-.copy {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
 }
 
 .ticket {

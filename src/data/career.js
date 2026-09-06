@@ -215,6 +215,8 @@ export const storyScenes = [
     id: 'eurowings',
     display: ['Eurowings', 'Digital'],
     ticket: 'Gate 01 · Eurowings Digital · Oct 2024 —',
+    // long stack, so the badges sit beside the copy rather than under it
+    layout: 'aside',
     roles: [job('eurowings')],
     stack: job('eurowings').stack,
   },

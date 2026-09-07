@@ -1,23 +1,58 @@
 /**
- * Eurowings A320, side profile, nose to the RIGHT.
+ * Eurowings A320-200, true side profile, nose to the RIGHT.
+ *
+ * The geometry is derived from the real aircraft at a fixed scale of
+ * 25.6 px/m (37.57 m of length -> 962 px of hull), so the stations below are
+ * measurements rather than eyeballed curves. Move one and the rest lie:
+ *
+ *   fuselage        3.95 m diameter -> 101 px deep, centreline y=249.5
+ *   overall height 11.76 m          -> fin tip y=50
+ *   nose gear       5.07 m aft      -> x=1000
+ *   wing root LE   16.90 m aft      -> x=697
+ *   main gear      17.70 m aft      -> x=677
+ *   nacelle         4.40 x 2.37 m   -> 113 x 58 px, 0.6 m ground clearance
  *
  * Ground contact (all wheels, gear down) sits at y=350 in this 1200x460
  * viewBox. That number is load-bearing: --ground in index.css positions this
  * and the van against one shared ground line, which is what lets the van take
  * over exactly where the aircraft finished rolling out.
  *
- * Every part overlaps whatever it attaches to - the pylon is drawn before the
- * nacelle, the sharklet base sits inside the wing tip, and the main gear is
- * placed aft of the engine so it is not buried behind it.
+ * Being an orthographic side view has three consequences worth knowing:
+ *   - both wings project onto each other, so the far wing and far tailplane
+ *     are drawn a few pixels off and muted - just enough parallax to stop the
+ *     shape reading flat;
+ *   - an A320 main leg carries a side-by-side wheel PAIR, not a tandem bogie,
+ *     so you see one wheel with the far one peeking out behind it;
+ *   - the near engine genuinely sits in front of the near main gear. It is
+ *     drawn the other way round here, because the gear coming down is a beat
+ *     in the scroll story and a leg hidden behind a nacelle cannot play it.
  */
 
-const CABIN_WINDOWS = Array.from({ length: 27 }, (_, i) => 470 + i * 21.5);
+const HULL =
+  'M182,240 C240,258 320,296 400,300 L1012,300 C1058,298 1094,291 1112,281 ' +
+  'C1126,273 1132,268 1131,262 C1130,251 1121,240 1106,230 C1082,212 1050,201 1012,199 ' +
+  'L400,199 C330,199 250,201 178,210 Z';
+
+/* pax doors and the two overwing exits, which are shorter and narrower */
 const DOORS = [
-  [1006, 32],
-  [820, 30],
-  [470, 30],
-  [260, 26],
+  { x: 976, y: 224, w: 30, h: 52 },
+  { x: 733, y: 230, w: 17, h: 40 },
+  { x: 695, y: 230, w: 17, h: 40 },
+  { x: 362, y: 224, w: 30, h: 52 },
 ];
+
+/* cabin windows sit above the centreline, and step around the doors */
+const CABIN_WINDOWS = Array.from({ length: 26 }, (_, i) => 380 + i * 22.5).filter(
+  (x) => !DOORS.some((d) => x + 9 > d.x - 5 && x < d.x + d.w + 5),
+);
+
+/* spoiler panels lie along the wing trailing edge, which rakes up at 23 deg */
+const SPOILERS = [
+  [512, 279],
+  [490, 269],
+  [468, 260],
+];
+const WING_RAKE = 23;
 
 export function Aircraft({ frame }) {
   const { gearMainDeg, gearNoseDeg, gearOpacity, spoilerDeg, smokeOpacity, smokeScale } = frame;
@@ -39,6 +74,10 @@ export function Aircraft({ frame }) {
           <stop offset="0%" stopColor="#F2ECEA" />
           <stop offset="100%" stopColor="#AA9D9C" />
         </linearGradient>
+        <linearGradient id="fairG" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#F0E9E7" />
+          <stop offset="100%" stopColor="#BCAFAE" />
+        </linearGradient>
         <linearGradient id="nacG" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#FFFFFF" />
           <stop offset="58%" stopColor="#E6DDD9" />
@@ -54,102 +93,153 @@ export function Aircraft({ frame }) {
           <stop offset="100%" stopColor="#476F82" />
         </linearGradient>
         <clipPath id="hullClip">
-          <path d="M1130,232 C1114,208 1090,192 1054,190 L480,186 C400,184 300,178 168,166 C214,188 268,214 340,234 C400,250 450,258 500,260 L1046,262 C1088,261 1114,252 1130,232 Z" />
+          <path d={HULL} />
         </clipPath>
       </defs>
 
-      {/* far wing - sweeps aft, stays under the fuselage roof */}
-      <path d="M782,222 C700,212 580,202 482,194 L452,197 C540,211 662,227 772,238 Z" fill="#9C8F91" opacity=".8" />
-      {/* horizontal stabiliser */}
-      <path d="M344,214 C292,204 240,192 196,182 L162,187 C210,201 268,219 332,233 Z" fill="#BCB0AF" stroke="#4A4144" strokeWidth="2" />
-      {/* vertical stabiliser */}
-      <path d="M398,186 C352,140 292,86 240,54 C236,50 232,50 226,52 L182,58 C178,58 176,62 178,68 C186,110 190,150 192,186 Z" fill="url(#finG)" stroke="#4A4144" strokeWidth="2" />
-      <path d="M262,72 C276,116 284,152 288,186 L192,186 C190,150 186,110 178,68 C176,62 178,58 182,58 L226,52 Z" fill="#CF4E8B" opacity=".55" />
+      {/* the far tailplane, offset by its dihedral - the only surface with
+          enough separation to be worth drawing twice in a side view */}
+      <path d="M344,248 C312,239 278,229 228,221 L190,232 L242,258 Z" fill="#6E6264" opacity=".55" />
 
-      {/* sharklet - base buried inside the wing tip */}
-      <path d="M434,318 C424,296 422,276 428,258 L448,258 C446,278 450,300 458,320 Z" fill="#AF1E65" stroke="#4A4144" strokeWidth="2" />
+      {/* dorsal fillet, then the fin: swept leading edge, rounded tip */}
+      <path d="M440,204 C406,202 384,196 372,208 Z" fill="#B32A6C" stroke="#4A4144" strokeWidth="2" />
+      <path
+        d="M372,208 C332,156 288,102 258,60 C254,52 248,48 240,50 L194,56 C186,58 182,62 184,70
+           C198,118 212,162 222,208 Z"
+        fill="url(#finG)"
+        stroke="#4A4144"
+        strokeWidth="2"
+      />
+      <path
+        d="M266,74 C282,124 294,166 302,208 L222,208 C212,162 198,118 184,70 C182,62 186,58 194,56 L240,50 Z"
+        fill="#CF4E8B"
+        opacity=".5"
+      />
 
+      {/* nose gear is drawn before the hull, so it retracts up into the belly */}
       <g
         id="gearNose"
         style={{
           transformBox: 'view-box',
-          transformOrigin: '1012px 254px',
+          transformOrigin: '1000px 292px',
           transform: `rotate(${gearNoseDeg}deg)`,
           opacity: gearOpacity,
         }}
       >
-        <rect x="1005" y="250" width="14" height="66" rx="6" fill="#8D8A88" stroke="#4A4144" strokeWidth="2" />
-        <circle cx="1012" cy="332" r="18" fill="#1D1B1C" stroke="#4A4144" strokeWidth="2" />
-        <circle cx="1012" cy="332" r="7" fill="#9B9896" />
+        <rect x="993" y="288" width="13" height="52" rx="5" fill="#8D8A88" stroke="#4A4144" strokeWidth="2" />
+        <circle cx="1007" cy="339" r="11" fill="#141214" stroke="#4A4144" strokeWidth="1.5" />
+        <circle cx="998" cy="339" r="11" fill="#1D1B1C" stroke="#4A4144" strokeWidth="2" />
+        <circle cx="998" cy="339" r="4" fill="#9B9896" />
       </g>
 
-      <path d="M1130,232 C1114,208 1090,192 1054,190 L480,186 C400,184 300,178 168,166 C214,188 268,214 340,234 C400,250 450,258 500,260 L1046,262 C1088,261 1114,252 1130,232 Z" fill="url(#hull)" stroke="#4A4144" strokeWidth="2.5" />
+      <path d={HULL} fill="url(#hull)" stroke="#4A4144" strokeWidth="2.5" />
       <g clipPath="url(#hullClip)">
-        <path d="M320,240 L1160,244 L1160,300 L320,300 Z" fill="#AF1E65" />
-        <path d="M320,234 L1160,238 L1160,244 L320,240 Z" fill="#6F1444" opacity=".65" />
-        <path d="M470,190 L1060,194 C1060,202 1042,205 1006,205 L480,200 Z" fill="#FFFFFF" opacity=".9" />
+        <path d="M160,276 L1180,276 L1180,320 L160,320 Z" fill="#AF1E65" />
+        <path d="M160,270 L1180,270 L1180,276 L160,276 Z" fill="#6F1444" opacity=".6" />
         {CABIN_WINDOWS.map((x) => (
-          <rect key={x} x={x} y={214} width={9} height={11} rx={4} fill="#3E4A52" opacity=".92" />
+          <rect key={x} x={x} y={228} width={9} height={12} rx={4} fill="#3E4A52" opacity=".92" />
         ))}
-        {DOORS.map(([x, w]) => (
-          <rect key={x} x={x} y={200} width={w} height={62} rx={9} fill="none" stroke="#BCAFAE" strokeWidth={2} />
+        {DOORS.map((d) => (
+          <rect key={d.x} x={d.x} y={d.y} width={d.w} height={d.h} rx={7} fill="none" stroke="#BCAFAE" strokeWidth={2} />
         ))}
-        <rect x="690" y="204" width="26" height="50" rx="8" fill="none" stroke="#BCAFAE" strokeWidth="2" />
-        <path d="M1046,202 L1094,208 C1101,210 1104,215 1102,221 L1044,221 Z" fill="url(#glassG)" stroke="#4A4144" strokeWidth="1.8" />
-        <path d="M1022,202 L1038,202 L1036,221 L1020,221 Z" fill="url(#glassG)" stroke="#4A4144" strokeWidth="1.8" />
-        <path d="M1080,194 C1096,208 1102,226 1098,244" fill="none" stroke="#B6A9A8" strokeWidth="1.8" />
-        <path d="M168,166 C300,178 400,184 480,186 L480,200 C398,198 296,190 176,176 Z" fill="#C2B4B3" opacity=".5" />
+        {/* the painted cockpit mask is what makes a nose read as an airliner */}
+        <path d="M1016,212 L1100,221 C1112,226 1116,236 1112,244 L1016,244 Z" fill="#2C2A2E" opacity=".9" />
+        <path d="M1050,218 L1096,225 C1104,227 1106,233 1104,239 L1052,239 Z" fill="url(#glassG)" stroke="#4A4144" strokeWidth="1.6" />
+        <path d="M1026,219 L1044,218 L1042,239 L1024,239 Z" fill="url(#glassG)" stroke="#4A4144" strokeWidth="1.6" />
+        {/* radome seam */}
+        <path d="M1086,206 C1102,222 1108,244 1102,264" fill="none" stroke="#B6A9A8" strokeWidth="1.8" />
+        {/* APU exhaust in the blunt end of the tail cone */}
+        <ellipse cx="182" cy="224" rx="7" ry="10" fill="#514649" />
       </g>
 
-      {/* near wing - crosses in front of the belly */}
-      <path d="M862,244 C740,262 600,288 462,318 L438,326 C442,336 452,340 464,338 C600,314 730,292 846,272 Z" fill="url(#wingG)" stroke="#4A4144" strokeWidth="2.5" />
+      {/* horizontal stabiliser, on the upswept cone */}
+      <path
+        d="M352,256 C318,246 282,236 232,228 L194,238 L246,266 Z"
+        fill="#8A7D7F"
+        stroke="#4A4144"
+        strokeWidth="2"
+      />
 
-      <g id="spoilers" fill="#EDE6E3" stroke="#4A4144" strokeWidth="2">
-        {[
-          [756, 250],
-          [694, 259],
-          [632, 270],
-        ].map(([x, y]) => (
+      {/* wing-to-body fairing: the belly bulge the wing box actually roots into */}
+      <path
+        d="M800,286 C792,300 758,309 700,310 L572,308 C514,306 486,298 484,286 Z"
+        fill="url(#fairG)"
+        stroke="#4A4144"
+        strokeWidth="1.6"
+      />
+
+      {/* pylon behind the wing, engine in front of it: the near nacelle is the
+          closest thing to the camera on this side of the aircraft */}
+      <path d="M598,282 L644,266 L670,270 L624,286 Z" fill="#C6B9B7" stroke="#4A4144" strokeWidth="2" />
+
+      {/* near wing: root chord at the fairing, sweeping aft and up to the tip */}
+      <path
+        d="M697,281 C640,268 560,254 497,242 L453,246 C500,258 522,271 542,285 Z"
+        fill="url(#wingG)"
+        stroke="#4A4144"
+        strokeWidth="2.5"
+      />
+      <path d="M697,283 C640,270 560,256 500,244 L497,250 C558,262 638,276 694,288 Z" fill="#7E7274" opacity=".28" />
+      {/* leading-edge root fairing, so the wing grows out of the body */}
+      <path d="M712,283 C706,274 702,270 694,268 L697,281 Z" fill="#D9D0CE" stroke="#4A4144" strokeWidth="1.6" />
+      {/* sharklet: raked aft, tapering, and short of the fuselage crown */}
+      <path
+        d="M497,242 C494,230 492,220 495,211 L474,207 C466,220 459,233 453,246 Z"
+        fill="#AF1E65"
+        stroke="#4A4144"
+        strokeWidth="1.8"
+      />
+      <path d="M495,211 C492,220 494,230 497,242 L488,240 C486,229 488,218 492,209 Z" fill="#CF4E8B" opacity=".5" />
+
+      <g id="spoilers" fill="#EDE6E3" stroke="#4A4144" strokeWidth="1.8">
+        {SPOILERS.map(([x, y]) => (
           <rect
             key={x}
             x={x}
             y={y}
-            width={46}
-            height={8}
-            rx={3}
+            width={34}
+            height={7}
+            rx={2}
             style={{
               transformBox: 'fill-box',
               transformOrigin: 'right bottom',
-              transform: `rotate(${spoilerDeg}deg)`,
+              transform: `rotate(${WING_RAKE + spoilerDeg}deg)`,
             }}
           />
         ))}
       </g>
 
+      <path
+        d="M634,276 C646,278 653,290 653,305 C653,320 646,332 634,334 L588,334
+           C572,332 564,321 564,305 C564,289 572,278 588,276 Z"
+        fill="url(#nacG)"
+        stroke="#4A4144"
+        strokeWidth="2.5"
+      />
+      <path
+        d="M630,276 C643,279 649,291 649,305 C649,319 643,331 630,334 L610,334
+           C623,330 629,318 629,305 C629,292 623,280 610,276 Z"
+        fill="#AF1E65"
+      />
+      <ellipse cx="649" cy="305" rx="10" ry="28" fill="url(#fanG)" stroke="#4A4144" strokeWidth="2" />
+      <path d="M564,291 L542,297 L542,313 L564,320 Z" fill="#B7ABA9" stroke="#4A4144" strokeWidth="2" />
+      <path d="M542,301 L526,306 L542,311 Z" fill="#6E6564" stroke="#4A4144" strokeWidth="1.6" />
+
       <g
         id="gearMain"
         style={{
           transformBox: 'view-box',
-          transformOrigin: '530px 256px',
+          transformOrigin: '677px 292px',
           transform: `rotate(${gearMainDeg}deg)`,
           opacity: gearOpacity,
         }}
       >
-        <path d="M508,250 h44 v14 h-44 z" fill="#C9BDBA" stroke="#4A4144" strokeWidth="2" />
-        <rect x="522" y="256" width="17" height="62" rx="7" fill="#8D8A88" stroke="#4A4144" strokeWidth="2" />
-        <rect x="506" y="304" width="48" height="11" rx="5" fill="#6E6B69" />
-        <circle cx="512" cy="329" r="21" fill="#1D1B1C" stroke="#4A4144" strokeWidth="2" />
-        <circle cx="548" cy="329" r="21" fill="#1D1B1C" stroke="#4A4144" strokeWidth="2" />
-        <circle cx="512" cy="329" r="8" fill="#9B9896" />
-        <circle cx="548" cy="329" r="8" fill="#9B9896" />
+        <rect x="669" y="288" width="16" height="48" rx="6" fill="#8D8A88" stroke="#4A4144" strokeWidth="2" />
+        <rect x="660" y="325" width="34" height="9" rx="4" fill="#6E6B69" />
+        <circle cx="687" cy="335" r="15" fill="#141214" stroke="#4A4144" strokeWidth="1.5" />
+        <circle cx="675" cy="335" r="15" fill="#1D1B1C" stroke="#4A4144" strokeWidth="2" />
+        <circle cx="675" cy="335" r="6" fill="#9B9896" />
       </g>
-
-      {/* pylon before nacelle, so the engine visibly hangs from the wing */}
-      <path d="M700,286 L728,254 L776,246 L750,282 Z" fill="#C6B9B7" stroke="#4A4144" strokeWidth="2" />
-      <path d="M800,286 C816,300 816,330 798,342 L668,346 C630,342 612,326 614,312 C616,294 638,282 668,280 Z" fill="url(#nacG)" stroke="#4A4144" strokeWidth="2.5" />
-      <path d="M796,284 C810,298 810,332 794,344 L772,344 C788,330 788,296 774,284 Z" fill="#AF1E65" />
-      <ellipse cx="797" cy="313" rx="11" ry="29" fill="url(#fanG)" stroke="#4A4144" strokeWidth="2" />
-      <path d="M614,316 C610,328 616,340 630,344" fill="none" stroke="#4A4144" strokeWidth="2.5" />
 
       <g
         id="smoke"
@@ -162,11 +252,11 @@ export function Aircraft({ frame }) {
           transform: `scale(${smokeScale})`,
         }}
       >
-        <circle cx="486" cy="344" r="18" />
-        <circle cx="446" cy="336" r="14" />
-        <circle cx="412" cy="344" r="11" />
-        <circle cx="574" cy="342" r="15" />
-        <circle cx="612" cy="334" r="11" />
+        <circle cx="612" cy="345" r="16" />
+        <circle cx="570" cy="339" r="12" />
+        <circle cx="536" cy="345" r="9" />
+        <circle cx="962" cy="344" r="12" />
+        <circle cx="930" cy="338" r="9" />
       </g>
     </svg>
   );

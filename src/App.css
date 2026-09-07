@@ -320,8 +320,9 @@
   align-items: baseline;
 }
 
-/* The name is a button now - it opens the identity card - but it has to keep
-   reading as the brandmark, so the button chrome is stripped back to text. */
+/* The monogram and the name are one button - it opens the identity card - but
+   it has to keep reading as the brandmark, so the button chrome is stripped
+   back to text. */
 .brandmark__identity {
   position: relative;
 }
@@ -337,14 +338,35 @@
   letter-spacing: 0.16em;
   text-transform: inherit;
   cursor: pointer;
-  /* the only affordance: a rule that fills in on hover, so the name still
-     looks like a name rather than a control */
+  /* inline-block, not flex: the button's baseline then comes from the name,
+     which is what keeps it aligned with the role and location beside it. The
+     mark is placed against that baseline by vertical-align instead. */
+  display: inline-block;
+}
+
+/* Sized in em so it tracks the name at every breakpoint. Height only - the
+   mark is taller than it is wide, and a square would squash it.
+
+   inline-block is not the default here: Tailwind's preflight sets every svg to
+   display:block, which would put the mark on its own line above the name. */
+.brandmark__logo {
+  display: inline-block;
+  height: 1.3em;
+  width: auto;
+  margin-right: 0.62em;
+  vertical-align: -0.26em;
+}
+
+/* the only affordance: a rule that fills in on hover, so the name still looks
+   like a name rather than a control. On the word alone - carrying it under the
+   mark as well would read as a link, not a signature. */
+.brandmark__wordmark {
   border-bottom: 1px solid transparent;
   transition: border-color 0.25s ease;
 }
 
-.brandmark__name:hover,
-.brandmark__name[aria-expanded='true'] {
+.brandmark__name:hover .brandmark__wordmark,
+.brandmark__name[aria-expanded='true'] .brandmark__wordmark {
   border-bottom-color: rgba(246, 239, 234, 0.55);
 }
 
@@ -353,7 +375,7 @@
   outline-offset: 4px;
 }
 
-.brandmark span {
+.brandmark__meta {
   opacity: 0.6;
 }
 
@@ -1301,6 +1323,10 @@
     letter-spacing: 0.12em;
   }
 
+  .brandmark__logo {
+    margin-right: 0.5em;
+  }
+
   .quickview {
     padding: 3px 8px;
     font-size: 10px;
@@ -1355,6 +1381,27 @@
 
    --ground is set on .stage rather than :root so each scene can claim the band
    height its own copy needs. */
+/* Narrow phones (iPhone SE and the like). The monogram costs the brandmark
+   about 22px, which is what tips the quick-view pill off the right edge at
+   320px. Tightening the name's tracking buys it back - nothing is dropped. */
+@media (max-width: 359px) {
+  .brandmark {
+    gap: 8px;
+  }
+
+  .brandmark__name {
+    letter-spacing: 0.06em;
+  }
+
+  .brandmark__logo {
+    margin-right: 0.34em;
+  }
+
+  .quickview {
+    padding: 3px 6px;
+  }
+}
+
 @media (max-width: 600px) {
   /* One band for every scene, sized for the tallest block in the story
      (Conze: two roles, seven responsibilities). Per-scene band heights would

@@ -9,6 +9,24 @@ describe('IdentityBadge', () => {
     expect(screen.getByRole('button', { name: profile.name })).toBeInTheDocument();
   });
 
+  test('draws the monogram on the trigger, without renaming the button', () => {
+    const { container } = render(<IdentityBadge />);
+
+    const trigger = screen.getByRole('button', { name: profile.name });
+
+    expect(trigger.querySelector('.brandmark__logo')).toBeInTheDocument();
+    // the mark is decorative: the button is still named by the name alone
+    expect(trigger.querySelector('.brandmark__logo')).toHaveAttribute('aria-hidden', 'true');
+  });
+
+  test('clicking the monogram opens the card, the same as the name', () => {
+    const { container } = render(<IdentityBadge />);
+
+    fireEvent.click(container.querySelector('.brandmark__logo'));
+
+    expect(container.querySelector('.idcard')).toBeInTheDocument();
+  });
+
   test('keeps the card closed until the name is clicked', () => {
     const { container } = render(<IdentityBadge />);
 

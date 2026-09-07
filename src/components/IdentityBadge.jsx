@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { profile, currentEmployer } from '../data/career';
 import { EurowingsMark } from '../illustrations/EurowingsMark';
+import { MeMark } from '../illustrations/MeMark';
 
 /**
- * The brandmark name, and the identity card it opens.
+ * The brandmark - monogram and name - and the identity card it opens.
  *
  * Drawn in the skill badges' visual language - the same shield silhouette and
  * the same mono type - but wearing the current employer's colours instead of
@@ -84,7 +85,12 @@ export function IdentityBadge() {
         onClick={() => setOpen((wasOpen) => !wasOpen)}
         ref={triggerRef}
       >
-        {profile.name}
+        {/* One control, not two: the monogram sits inside the same button as
+            the name, so there is a single tab stop and the card cannot be
+            opened by one half and closed by the other. The mark is
+            aria-hidden, so the button is still named by the name alone. */}
+        <MeMark className="brandmark__logo" />
+        <span className="brandmark__wordmark">{profile.name}</span>
       </button>
 
       {open && (

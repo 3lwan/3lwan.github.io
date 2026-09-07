@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="ME">
+  <title>ME</title>
+  <!-- Dark mark on a light rounded tile, for anywhere the site's paper ground
+       would be wrong: a light-mode profile picture, a business card, print. -->
+  <rect width="512" height="512" rx="97" ry="97" fill="#F2F2F4"/>
+  <g fill="#292A2C">
+    <path d="M149.8,327.3 L149.8,173.5 L256.5,244.7 L405.8,145.2 L405.8,92.9 L256.5,192.4 L106.2,92.2 L106.2,356.4 Z"/>
+    <path d="M405.8,182.5 L262.7,277.9 L262.7,419.8 L405.8,324.5 L405.8,272.2 L306.3,338.5 L306.3,301.2 L405.8,234.8 Z"/>
+  </g>
+</svg>

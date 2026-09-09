@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { profile, currentEmployer } from '../data/career';
+import { profile, phoneHref, currentEmployer } from '../data/career';
 import { EurowingsMark } from '../illustrations/EurowingsMark';
 import { MeMark } from '../illustrations/MeMark';
 
@@ -23,9 +23,6 @@ const MONOGRAM = profile.name
   .map((part) => part[0])
   .join('');
 
-/** tel: wants no spaces; the visible text keeps them. */
-const TEL_HREF = `tel:${profile.phone.replace(/\s/g, '')}`;
-
 /**
  * The handle inside a profile URL, so a row reads "GITHUB  3lwan" rather than
  * saying the network's name twice. Route segments that only describe the page
@@ -40,7 +37,7 @@ function handleOf(url) {
 
 const CONTACTS = [
   { label: 'Email', text: profile.email, href: `mailto:${profile.email}` },
-  { label: 'Phone', text: profile.phone, href: TEL_HREF },
+  { label: 'Phone', text: profile.phone, href: phoneHref },
   { label: 'GitHub', text: handleOf(profile.links.github), href: profile.links.github },
   { label: 'LinkedIn', text: handleOf(profile.links.linkedin), href: profile.links.linkedin },
   { label: 'Xing', text: handleOf(profile.links.xing), href: profile.links.xing },

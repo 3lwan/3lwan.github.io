@@ -1,4 +1,4 @@
-import { profile, experiences, education, languages, skills } from '../data/career';
+import { profile, phoneHref, experiences, education, languages, skills } from '../data/career';
 import { SkillBadge } from './SkillBadge';
 
 /**
@@ -17,6 +17,8 @@ export function LinearCV() {
         </p>
         <p className="linear__contact">
           <a href={`mailto:${profile.email}`}>{profile.email}</a>
+          {' · '}
+          <a href={phoneHref}>{profile.phone}</a>
           {' · '}
           <a href={profile.links.github}>GitHub</a>
           {' · '}

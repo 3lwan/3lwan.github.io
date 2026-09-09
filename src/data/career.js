@@ -19,6 +19,9 @@ export const profile = {
   },
 };
 
+/** tel: wants no spaces; the visible text keeps them. */
+export const phoneHref = `tel:${profile.phone.replace(/\s/g, '')}`;
+
 /**
  * Every technology named anywhere on the CV, with its display name and its
  * proficiency (1-5, which the badge shows as stars).
@@ -297,6 +300,7 @@ export const storyScenes = [
         title: 'Say hello',
         details: [
           { text: profile.email, href: `mailto:${profile.email}` },
+          { text: profile.phone, href: phoneHref },
           { text: profile.location },
         ],
       },

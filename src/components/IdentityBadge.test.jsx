@@ -19,6 +19,15 @@ describe('IdentityBadge', () => {
     expect(trigger.querySelector('.brandmark__logo')).toHaveAttribute('aria-hidden', 'true');
   });
 
+  test('stands a caret on the trigger, so it reads as a control before hover', () => {
+    render(<IdentityBadge />);
+
+    const trigger = screen.getByRole('button', { name: profile.name });
+
+    // decorative: the caret must not creep into the button's name
+    expect(trigger.querySelector('.brandmark__caret')).toHaveAttribute('aria-hidden', 'true');
+  });
+
   test('clicking the monogram opens the card, the same as the name', () => {
     const { container } = render(<IdentityBadge />);
 

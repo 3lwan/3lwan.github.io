@@ -355,6 +355,50 @@
   width: auto;
   margin-right: 0.62em;
   vertical-align: -0.26em;
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+/* The mark answers the hover too, so the whole brandmark reads as one control
+   rather than a live name beside a static logo. */
+.brandmark__name:hover .brandmark__logo,
+.brandmark__name:focus-visible .brandmark__logo,
+.brandmark__name[aria-expanded='true'] .brandmark__logo {
+  transform: translateY(-1px);
+  filter: drop-shadow(0 2px 5px rgba(6, 3, 9, 0.55));
+}
+
+/* Standing disclosure caret - the affordance that is there before any hover,
+   and the only one touch ever sees. Sized in em so it tracks the name.
+
+   Dimmer than the name at rest: it has to be legible as "this opens", not
+   compete with the signature. */
+.brandmark__caret {
+  display: inline-block;
+  height: 0.42em;
+  width: auto;
+  margin-left: 0.5em;
+  vertical-align: 0.16em;
+  opacity: 0.55;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.brandmark__name:hover .brandmark__caret,
+.brandmark__name:focus-visible .brandmark__caret {
+  opacity: 0.95;
+}
+
+/* Flipped, not spun: a half turn of a chevron this small reads as a direction
+   change; a rotation reads as a wobble. */
+.brandmark__name[aria-expanded='true'] .brandmark__caret {
+  opacity: 0.95;
+  transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brandmark__logo,
+  .brandmark__caret {
+    transition: none;
+  }
 }
 
 /* the only affordance: a rule that fills in on hover, so the name still looks
@@ -1398,6 +1442,12 @@
 
   .brandmark__logo {
     margin-right: 0.34em;
+  }
+
+  /* the caret stays - it is the affordance on touch - but it gives back the
+     few pixels it costs the quick-view pill at 320px */
+  .brandmark__caret {
+    margin-left: 0.32em;
   }
 
   .quickview {

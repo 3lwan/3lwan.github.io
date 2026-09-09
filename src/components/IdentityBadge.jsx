@@ -85,6 +85,14 @@ export function IdentityBadge() {
             aria-hidden, so the button is still named by the name alone. */}
         <MeMark className="brandmark__logo" />
         <span className="brandmark__wordmark">{profile.name}</span>
+        {/* The resting affordance: without it the brandmark reads as chrome
+            rather than a control, since the underline only arrives on hover -
+            and on touch there is no hover at all. Decorative, so the button is
+            still named by the name alone; aria-expanded already says the same
+            thing to assistive tech. */}
+        <svg className="brandmark__caret" viewBox="0 0 10 6" aria-hidden="true">
+          <path d="M1 1.2 5 4.8 9 1.2" fill="none" stroke="currentColor" strokeWidth="1.4" />
+        </svg>
       </button>
 
       {open && (

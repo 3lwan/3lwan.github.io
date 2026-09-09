@@ -1,201 +1,1885 @@
-body,
-html {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
-  background-color: #f0f0f0;
+/* ============================================================
+   Scroll story
+   ============================================================ */
+.track {
+  position: relative;
+  /* seven scenes, each with a hold and a hand-off */
+  height: 1400vh;
 }
 
-#root {
-  min-height: 100%;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  box-sizing: border-box;
+.stage {
+  position: sticky;
+  top: 0;
+  /* svh, not vh: a mobile browser's vh includes the collapsing URL bar, so the
+     stage overflows and the ground line jumps as the bar hides. The vh line
+     stays first as the fallback for browsers without svh. */
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--paper);
 }
 
-.App {
-  width: 100%;
-  max-width: 100%;
-  padding: 20px;
-  box-sizing: border-box;
-  background-color: white;
+.stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 7;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+  opacity: 0.2;
+}
+
+.stage::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 6;
+  background: radial-gradient(130% 90% at 50% 46%, transparent 42%, rgba(6, 3, 9, 0.58) 100%);
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
   overflow: hidden;
 }
 
-.header {
-  margin-bottom: 30px;
-}
-
-.main-content {
-  display: flex;
-  flex-direction: column;
-}
-
-.timeline-container {
-  display: flex;
-  flex-direction: column;
-  margin: 0;
-  padding: 20px 0;
+/* ---- worlds ---- */
+.world-sky {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
   width: 100%;
+  height: 78vh;
+  display: block;
 }
 
-.timeline-item {
+.world-horizon {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: var(--ground);
+  width: 100%;
+  height: 20vh;
+  display: block;
+}
+
+.world-deck {
+  position: absolute;
+  left: 0;
+  right: 0;
+  /* sits above the horizon, not down over the copy block */
+  bottom: calc(var(--ground) + 10vh);
+  width: 100%;
+  height: 26vh;
+  display: block;
+  z-index: 2;
+  opacity: 0.6;
+}
+
+/* ---- shared ground plane ---- */
+.ground {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--ground);
+  overflow: hidden;
+}
+
+.ground::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.ground--runway {
+  background: linear-gradient(#3b3a44 0%, #26242e 40%, #17161d 100%);
+}
+
+.ground--street {
+  background: linear-gradient(#2a3220 0%, #1b2115 45%, #10140c 100%);
+}
+
+.ground--city {
+  background: linear-gradient(#123049 0%, #0a1e30 45%, #050f1a 100%);
+}
+
+/* Every scene keeps a dark foreground: the copy is cream, and a light clinic
+   floor left it unreadable. The walls above stay bright and clinical. */
+.ground--clinic {
+  background: linear-gradient(#1c5568 0%, #0e3242 45%, #061c25 100%);
+}
+
+.ground--blueprint {
+  background: linear-gradient(#123c4e 0%, #0a2532 45%, #04131c 100%);
+}
+
+.ground--dusk {
+  background: linear-gradient(#4a2c4e 0%, #2a1930 45%, #140c18 100%);
+}
+
+.ground--dawn {
+  background: linear-gradient(#4a5570 0%, #26304a 45%, #0f1526 100%);
+}
+
+.stripes--floor {
+  /* close under the unit, clear of the copy block below */
+  top: max(0px, min(5%, calc(100% - 27rem)));
+}
+
+.stripes--floor i {
+  height: 3px;
+  width: 210px;
+  background: #9fd0dd;
+  opacity: 0.35;
+}
+
+.stripes {
+  position: absolute;
+  left: -50%;
+  width: 200%;
+  display: flex;
+  gap: 120px;
+  will-change: transform;
+}
+
+.stripes i {
+  display: block;
+  flex: none;
+  width: 150px;
+  height: 8px;
+  border-radius: 4px;
+  background: #e9e3d6;
+  opacity: 0.55;
+}
+
+/* The ground band scales with the viewport (--ground is 40vh) but a copy block
+   is sized by its text, so its height barely moves. Below roughly 1150px tall
+   the two collide and the marks end up running through the ticket. Every mark
+   therefore rides up as the band shrinks, staying above the space the copy
+   reserves, and stops at the ground's leading edge rather than crossing it. */
+.stripes--runway {
+  top: max(0px, min(7%, calc(100% - 27.5rem)));
+}
+
+.stripes--road {
+  top: max(0px, min(7%, calc(100% - 25rem)));
+}
+
+.stripes--road i {
+  background: #e9d9c6;
+  opacity: 0.45;
+}
+
+.edgelights {
+  position: absolute;
+  left: -50%;
+  /* just beyond the wheels, at the near edge of the runway - and, on a short
+     viewport, above the copy rather than glowing through its ticket */
+  top: max(34px, min(17%, calc(100% - 25rem)));
+  width: 200%;
+  display: flex;
+  gap: 150px;
+  will-change: transform;
+}
+
+.edgelights i {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ffd98a;
+  box-shadow: 0 0 10px 3px rgba(255, 217, 138, 0.4);
+}
+
+/* ---- vehicles, both hung off the same ground line ---- */
+.vehicle {
+  position: absolute;
+  left: 50%;
+  bottom: var(--ground);
+  z-index: 3;
+}
+
+.vehicle svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* offsets place each vehicle's wheels exactly on --ground:
+   aircraft contact y=350/460 -> 23.9% | van contact y=392/460 -> 14.8% */
+.vehicle--plane {
+  width: min(70vw, 1120px);
+  transform: translate(-50%, 23.9%);
+  filter: drop-shadow(0 24px 30px rgba(10, 4, 14, 0.45));
+}
+
+.vehicle--van {
+  width: min(68vw, 1060px);
+  transform: translate(-50%, 14.8%);
+  filter: drop-shadow(0 18px 20px rgba(6, 10, 3, 0.6));
+}
+
+/* every ground object contacts at y=392 of a 460-tall viewBox -> 14.8% */
+.vehicle--fleet {
+  width: min(72vw, 1140px);
+  transform: translate(-50%, 14.8%);
+  filter: drop-shadow(0 18px 22px rgba(2, 12, 26, 0.6));
+}
+
+.vehicle--cerec {
+  width: min(38vw, 520px);
+  transform: translate(-50%, 14.8%);
+  filter: drop-shadow(0 16px 24px rgba(8, 30, 40, 0.5));
+}
+
+.vehicle--bench {
+  width: min(62vw, 980px);
+  transform: translate(-50%, 14.8%);
+  filter: drop-shadow(0 16px 22px rgba(4, 20, 30, 0.55));
+}
+
+.vehicle--bubbles {
+  width: min(66vw, 1040px);
+  transform: translate(-50%, 14.8%);
+}
+
+.vehicle--signpost {
+  width: min(70vw, 1100px);
+  transform: translate(-50%, 14.8%);
+  filter: drop-shadow(0 16px 22px rgba(6, 12, 26, 0.5));
+}
+
+.vehicle__move {
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .vehicle--plane .vehicle__inner {
+    animation: bob 7s ease-in-out infinite;
+  }
+
+  .vehicle--plane .vehicle__inner.is-grounded {
+    animation: none;
+  }
+
+  .drift {
+    animation: drift 70s linear infinite;
+  }
+
+  .drift--slow {
+    animation-duration: 120s;
+  }
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(-8px);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+@keyframes drift {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-1440px);
+  }
+}
+
+/* ============================================================
+   Chrome
+   ============================================================ */
+.hud {
+  position: absolute;
+  z-index: 9;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.brandmark {
+  top: clamp(18px, 3.4vh, 34px);
+  left: clamp(18px, 3.4vw, 44px);
+  display: flex;
+  gap: 14px;
+  align-items: baseline;
+}
+
+/* The monogram and the name are one button - it opens the identity card - but
+   it has to keep reading as the brandmark, so the button chrome is stripped
+   back to text. */
+.brandmark__identity {
   position: relative;
+}
+
+.brandmark__name {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-family: var(--display);
+  font-variation-settings: 'wdth' 118, 'wght' 800;
+  font-size: 15px;
+  letter-spacing: 0.16em;
+  text-transform: inherit;
+  cursor: pointer;
+  /* inline-block, not flex: the button's baseline then comes from the name,
+     which is what keeps it aligned with the role and location beside it. The
+     mark is placed against that baseline by vertical-align instead. */
+  display: inline-block;
+}
+
+/* Sized in em so it tracks the name at every breakpoint. Height only - the
+   mark is taller than it is wide, and a square would squash it.
+
+   inline-block is not the default here: Tailwind's preflight sets every svg to
+   display:block, which would put the mark on its own line above the name. */
+.brandmark__logo {
+  display: inline-block;
+  height: 1.3em;
+  width: auto;
+  margin-right: 0.62em;
+  vertical-align: -0.26em;
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+/* The mark answers the hover too, so the whole brandmark reads as one control
+   rather than a live name beside a static logo. */
+.brandmark__name:hover .brandmark__logo,
+.brandmark__name:focus-visible .brandmark__logo,
+.brandmark__name[aria-expanded='true'] .brandmark__logo {
+  transform: translateY(-1px);
+  filter: drop-shadow(0 2px 5px rgba(6, 3, 9, 0.55));
+}
+
+/* Standing disclosure caret - the affordance that is there before any hover,
+   and the only one touch ever sees. Sized in em so it tracks the name.
+
+   Dimmer than the name at rest: it has to be legible as "this opens", not
+   compete with the signature. */
+.brandmark__caret {
+  display: inline-block;
+  height: 0.42em;
+  width: auto;
+  margin-left: 0.5em;
+  vertical-align: 0.16em;
+  opacity: 0.55;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.brandmark__name:hover .brandmark__caret,
+.brandmark__name:focus-visible .brandmark__caret {
+  opacity: 0.95;
+}
+
+/* Flipped, not spun: a half turn of a chevron this small reads as a direction
+   change; a rotation reads as a wobble. */
+.brandmark__name[aria-expanded='true'] .brandmark__caret {
+  opacity: 0.95;
+  transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brandmark__logo,
+  .brandmark__caret {
+    transition: none;
+  }
+}
+
+/* the only affordance: a rule that fills in on hover, so the name still looks
+   like a name rather than a control. On the word alone - carrying it under the
+   mark as well would read as a link, not a signature. */
+.brandmark__wordmark {
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.25s ease;
+}
+
+.brandmark__name:hover .brandmark__wordmark,
+.brandmark__name[aria-expanded='true'] .brandmark__wordmark {
+  border-bottom-color: rgba(246, 239, 234, 0.55);
+}
+
+.brandmark__name:focus-visible {
+  outline: 1px solid rgba(246, 239, 234, 0.7);
+  outline-offset: 4px;
+}
+
+.brandmark__meta {
+  opacity: 0.6;
+}
+
+.instruments {
+  top: clamp(18px, 3.4vh, 34px);
+  right: clamp(18px, 3.4vw, 44px);
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.readout {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 12px;
+  justify-content: end;
+  align-items: baseline;
+}
+
+.readout i {
+  font-style: normal;
+  opacity: 0.55;
+  font-size: 10px;
+}
+
+.readout b {
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  color: #fff;
+}
+
+.copy-deck {
+  position: absolute;
+  isolation: isolate;
+  z-index: 9;
+  left: clamp(18px, 3.4vw, 44px);
+  bottom: clamp(26px, 6vh, 64px);
+  width: min(37rem, 72vw);
+  min-height: 20rem;
+}
+
+.copy {
+  position: absolute;
+  isolation: isolate;
+  left: 0;
+  bottom: 0;
   width: 100%;
-  margin-bottom: 30px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 20px;
+}
+
+/* The copy sits over illustration that changes throughout the scroll, so it
+   carries its own ground rather than depending on what happens to be behind.
+
+   On the copy rather than the deck: scenes set their own width - the ones that
+   put the badges beside the text run wider than the deck - so a pool sized to
+   the deck left the outer badges standing on bare illustration. Sized to the
+   block, it also fades with the block instead of sitting under every scene. */
+.copy::before {
+  content: '';
+  position: absolute;
+  inset: -30px -58px -38px -46px;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    115% 105% at 0% 100%,
+    rgba(6, 3, 9, 0.9) 0%,
+    rgba(6, 3, 9, 0.72) 42%,
+    rgba(6, 3, 9, 0) 76%
+  );
+}
+
+.ticket {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 12px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(246, 239, 234, 0.34);
+  border-radius: 2px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.ticket em {
+  font-style: normal;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.copy h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-variation-settings: 'wdth' 122, 'wght' 800;
+  font-size: clamp(2.3rem, 5.8vw, 4.3rem);
+  line-height: 0.92;
+  letter-spacing: -0.015em;
+  text-transform: uppercase;
+  text-wrap: balance;
+  text-shadow: 0 2px 18px rgba(8, 4, 10, 0.5);
+}
+
+.copy h3 {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  font-family: var(--body);
+  font-weight: 500;
+  font-size: clamp(1rem, 1.7vw, 1.2rem);
+  color: rgba(246, 239, 234, 0.96);
+  text-shadow: 0 1px 10px rgba(8, 4, 10, 0.8);
+}
+
+.copy__role {
+  margin-top: 14px;
+}
+
+.copy__period {
+  margin-left: 10px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.65;
+}
+
+.copy ul {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  max-width: 34rem;
+}
+
+/* Two roles at one employer sit side by side, so neither reads as a footnote
+   to the other and the block stays short enough for the scene. */
+.copy--dense {
+  width: min(54rem, 88vw);
+}
+
+.copy--dense h2 {
+  font-size: clamp(1.9rem, 4.4vw, 3.2rem);
+}
+
+.copy--dense .copy__roles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 30px;
+  align-items: start;
+  margin-top: 4px;
+}
+
+.copy--dense .copy__role {
+  margin-top: 8px;
+}
+
+/* h3 is a flex row, so display:block will not break the line - the period
+   needs a full-width basis to drop under the title. */
+.copy--dense .copy__period {
+  flex-basis: 100%;
+  margin: 4px 0 0;
+}
+
+.copy--dense ul {
+  gap: 4px;
+  margin-top: 9px;
+}
+
+.copy--dense li {
+  font-size: 0.87rem;
+  line-height: 1.35;
+}
+
+.copy--dense .chips {
+  margin-top: 14px;
+}
+
+/* Scenes whose copy is short enough that a bottom-anchored block leaves a
+   dead band between the horizon and the ticket. Lifting them closes it. */
+.copy--lifted {
+  bottom: clamp(34px, 6.5vh, 78px);
+}
+
+/* Education is the shortest block in the story - no badges, and one line per
+   degree - so the shared lift still leaves it hanging well below the horizon.
+   It gets a deeper one, which puts its ticket the same distance under the
+   ground line as INVERS and Languages. */
+.copy--lifted[data-scene='education'] {
+  bottom: clamp(58px, 12vh, 132px);
+}
+
+/* Conze is the tallest block in the story, and its ground band has only about
+   ten pixels to spare above it once the floor marks have ridden up as far as
+   the ground's leading edge. It sinks a little so the marks clear its ticket -
+   in vh, so a shorter viewport sinks it less rather than off the bottom. */
+.copy[data-scene='conze'] {
+  bottom: clamp(-26px, -2.4vh, -10px);
+}
+
+/* The tall scenes - Flaschenpost's eight badges, Conze's two roles - ran up
+   into the illustration when the badges sat under the copy. Beside it, the
+   block loses a whole row and the ticket stays below the horizon. */
+.copy--aside .copy__body {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(16px, 2.2vw, 32px);
+}
+
+.copy--aside .copy__roles {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* A fixed badge grid rather than a wrapping row: the column keeps the same
+   width whatever the scene carries, and stays roughly as tall as the
+   responsibilities beside it instead of towering over them. */
+.copy--aside .chips {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  justify-content: start;
   margin-top: 15px;
 }
 
-.timeline-item.experience {
-  border-left: 5px solid #4a90e2;
+/* Conze already spends its width on two roles, so its badges stack narrower
+   and align with the first role's heading rather than the top of the block. */
+.copy--dense.copy--aside .chips {
+  grid-template-columns: repeat(2, auto);
+  margin-top: 9px;
 }
 
-.timeline-item.education {
-  border-left: 5px solid #e94e77;
+/* With the badges taking a column, an even split would wrap the longer role's
+   responsibilities - the lead role gets the wider share instead. */
+.copy--dense.copy--aside .copy__roles {
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
 }
 
-.timeline-icon {
+/* The badge grid takes width the responsibilities used to have, so a
+   single-role aside scene widens enough to keep its longest line unwrapped. */
+.copy--aside:not(.copy--dense) {
+  width: min(51rem, 84vw);
+}
+
+.copy--aside:not(.copy--dense) ul {
+  max-width: none;
+}
+
+@media (max-width: 900px) {
+  .copy--dense .copy__roles {
+    grid-template-columns: 1fr;
+  }
+
+  .copy--aside .copy__body {
+    display: block;
+  }
+
+  .copy--aside .chips {
+    display: flex;
+    margin-top: 20px;
+  }
+
+  .copy--aside:not(.copy--dense) {
+    width: min(37rem, 72vw);
+  }
+}
+
+.copy li {
+  position: relative;
+  padding-left: 18px;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: rgba(246, 239, 234, 0.92);
+  /* the copy sits over illustration, not flat colour, so it carries its own
+     contrast rather than relying on the scene behind it */
+  text-shadow: 0 1px 10px rgba(8, 4, 10, 0.8);
+}
+
+.copy li::before {
+  content: '';
   position: absolute;
-  left: -22px;
-  top: 20px;
-  width: 40px;
-  height: 40px;
-  background: white;
-  border: 5px solid;
+  left: 2px;
+  /* centred on the first line's cap height rather than its box */
+  top: 0.58em;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
+  /* not currentColor: the marker should not inherit the text's transparency */
+  background: #f6efea;
+  opacity: 0.95;
+  box-shadow: 0 1px 6px rgba(8, 4, 10, 0.7);
+}
+
+.copy__inline-link {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(246, 239, 234, 0.45);
+  transition: border-color 0.25s ease, color 0.25s ease;
+}
+
+.copy__inline-link:hover {
+  color: #fff;
+  border-bottom-color: #fff;
+}
+
+.copy__links {
   display: flex;
-  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.copy__link {
+  display: inline-flex;
   align-items: center;
-  z-index: 1;
+  gap: 2px;
+  padding: 9px 16px;
+  border: 1px solid rgba(246, 239, 234, 0.4);
+  border-radius: 2px;
+  background: rgba(12, 8, 16, 0.45);
+  color: rgba(246, 239, 234, 0.95);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
 }
 
-.timeline-item.experience .timeline-icon {
-  border-color: #4a90e2;
+.copy__link:hover {
+  background: rgba(246, 239, 234, 0.16);
+  border-color: rgba(246, 239, 234, 0.85);
+  transform: translateY(-1px);
 }
 
-.timeline-item.experience .timeline-icon svg {
-  color: #4a90e2;
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  /* the shields are pointed, so they need more air than the old chips did */
+  gap: 16px 12px;
+  margin-top: 20px;
 }
 
-.timeline-item.education .timeline-icon {
-  border-color: #e94e77;
+/* ---- Skill badges ------------------------------------------------------- */
+
+/* The shield: square shoulders, a point at the bottom. Clipped on .badge__face
+   rather than .badge, so the tooltip can escape the clip. */
+.badge {
+  --shield: polygon(0 0, 100% 0, 100% 72%, 50% 100%, 0 72%);
+  --badge-w: 74px;
+  position: relative;
+  display: inline-block;
+  width: var(--badge-w);
+  font-family: var(--mono);
 }
 
-.timeline-item.education .timeline-icon svg {
-  color: #e94e77;
+.badge__face {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  /* bottom padding clears the shield's point, so the stars never sit in it */
+  padding: 11px 5px 19px;
+  clip-path: var(--shield);
+  background:
+    linear-gradient(180deg, rgba(246, 239, 234, 0.16), rgba(246, 239, 234, 0.04) 58%),
+    rgba(12, 8, 16, 0.5);
+  transition: transform 0.28s ease, filter 0.28s ease;
 }
 
-.timeline-date {
-  font-size: 0.9em;
+/* drop-shadow, not box-shadow: box-shadow is drawn outside the clip and lost */
+.badge:hover .badge__face {
+  transform: translateY(-3px);
+  filter: drop-shadow(0 7px 14px rgba(6, 3, 9, 0.7));
+}
+
+.badge__label {
+  font-size: 10.5px;
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  text-align: center;
+  color: rgba(246, 239, 234, 0.92);
+  overflow-wrap: anywhere;
+}
+
+.badge__stars {
+  display: flex;
+  gap: 1.5px;
+}
+
+.badge__star {
+  width: 7px;
+  height: 7px;
+  fill: rgba(246, 239, 234, 0.2);
+}
+
+.badge__star--on {
+  fill: var(--level-color);
+}
+
+.badge__tip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 7px);
+  z-index: 8;
+  padding: 4px 9px;
+  border: 1px solid rgba(246, 239, 234, 0.28);
+  border-radius: 2px;
+  background: rgba(8, 4, 10, 0.94);
+  color: rgba(246, 239, 234, 0.95);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 4px);
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.badge:hover .badge__tip {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* Present for assistive tech and print, invisible on screen - the tooltip is
+   hover-only, so this is the badge's only accessible name. */
+.badge__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Scene badges sit over the illustration next to the copy, so they run smaller
+   than the ones in the quick-view CV, which has a page to itself - small enough
+   that the longest stack (Eurowings, eight of them) stays on one line. */
+.copy .chips {
+  gap: 13px 10px;
+}
+
+.copy .badge {
+  --badge-w: 62px;
+}
+
+.linear .badge {
+  --badge-w: 88px;
+}
+
+@media (max-width: 900px) {
+  .copy .badge {
+    --badge-w: 58px;
+  }
+
+  .copy .badge__label {
+    font-size: 9.5px;
+  }
+}
+
+.placeholder {
+  margin: 18px 0 0;
+  padding-left: 10px;
+  border-left: 2px solid #ffd24a;
+  color: #ffd24a;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1.6;
+}
+
+.rail {
+  position: absolute;
+  z-index: 9;
+  right: clamp(18px, 3.4vw, 44px);
+  bottom: clamp(26px, 6vh, 64px);
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  align-items: flex-end;
+}
+
+.stop {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: rgba(246, 239, 234, 0.42);
+}
+
+.stop u {
+  display: block;
+  width: 24px;
+  height: 1px;
+  background: currentColor;
+  text-decoration: none;
+  transition: width 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.stop--on {
+  color: #fff;
+}
+
+.stop--on u {
+  width: 52px;
+}
+
+.stop--todo {
+  opacity: 0.42;
+  font-style: italic;
+}
+
+.scrollcue {
+  position: absolute;
+  z-index: 9;
+  left: 50%;
+  bottom: clamp(14px, 2.6vh, 26px);
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(246, 239, 234, 0.6);
+}
+
+.scrollcue u {
+  display: block;
+  width: 1px;
+  height: 24px;
+  text-decoration: none;
+  background: linear-gradient(rgba(246, 239, 234, 0.7), transparent);
+}
+
+/* ---- Identity card ------------------------------------------------------ */
+
+/* The employee pass behind the name: the skill badges' shield and mono type,
+   wearing the current employer's colours instead of the badges' neutral glass.
+   Colours arrive as custom properties from the employer entry in career.js, so
+   changing jobs recolours the card without touching this file. */
+.idcard {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 0;
+  z-index: 20;
+  width: min(292px, calc(100vw - 28px));
+  padding: 0 0 16px;
+  border: 1px solid color-mix(in srgb, var(--brand-accent) 55%, transparent);
+  border-radius: 3px;
+  /* the card floats over the illustration, so it needs a near-solid ground:
+     at 0.94 the aircraft read straight through the contact rows */
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--brand) 42%, transparent), transparent 46%),
+    rgba(10, 6, 13, 0.985);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 18px 40px rgba(6, 3, 9, 0.66);
+  text-transform: none;
+  letter-spacing: normal;
+  animation: idcard-in 0.24s ease both;
+}
+
+@keyframes idcard-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+/* the header strip carries the employer, the way a real pass does */
+.idcard__strip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 16px 12px;
+  border-bottom: 1px solid color-mix(in srgb, var(--brand-accent) 42%, transparent);
+}
+
+.idcard__mark svg {
+  display: block;
+  width: 34px;
+  height: auto;
+}
+
+.idcard__employer {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(246, 239, 234, 0.9);
+}
+
+.idcard__body {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 16px 14px;
+}
+
+/* the same silhouette the skill badges use, at pass-photo size */
+.idcard__shield {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 66px;
+  clip-path: polygon(0 0, 100% 0, 100% 72%, 50% 100%, 0 72%);
+  /* the gradient still shows while the photo loads, and behind it if it never does */
+  background: linear-gradient(180deg, var(--brand-accent), var(--brand));
+}
+
+.idcard__photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* the file is cut to the shield's ratio, with the face clear of the point
+     the bottom third tapers to, so cover shows the whole frame */
+  object-fit: cover;
+  /* a street photo against a card of two brand colours: pulled back a little,
+     so it sits in the card's world instead of shouting over it */
+  filter: saturate(0.82) contrast(1.04);
+}
+
+.idcard__who {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.idcard__who b {
+  font-family: var(--display);
+  font-variation-settings: 'wdth' 118, 'wght' 800;
+  font-size: 15px;
+  letter-spacing: 0.03em;
+  color: rgba(246, 239, 234, 0.96);
+}
+
+.idcard__who span {
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1.5;
+  letter-spacing: 0.07em;
+  color: rgba(246, 239, 234, 0.62);
+}
+
+.idcard__contacts {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding: 14px 16px 0;
+  border-top: 1px solid rgba(246, 239, 234, 0.12);
+  list-style: none;
+}
+
+.idcard__contacts li {
+  display: grid;
+  grid-template-columns: 62px 1fr;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.idcard__contacts i {
+  font-style: normal;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(246, 239, 234, 0.42);
+}
+
+.idcard__contacts a {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  color: rgba(246, 239, 234, 0.9);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid transparent;
+  transition: color 0.22s ease, border-color 0.22s ease;
+}
+
+.idcard__contacts a:hover,
+.idcard__contacts a:focus-visible {
+  /* the third brand colour, which the card otherwise never gets to use */
+  color: var(--brand-sky);
+  border-bottom-color: var(--brand-sky);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .idcard {
+    animation: none;
+  }
+}
+
+/* ---- entry point into the quick-view CV ---- */
+.quickview {
+  margin-left: 4px;
+  padding: 4px 9px;
+  border: 1px solid rgba(246, 239, 234, 0.34);
+  border-radius: 2px;
+  color: inherit;
+  text-decoration: none;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.quickview:hover,
+.quickview:focus-visible {
+  background: rgba(246, 239, 234, 0.14);
+  border-color: rgba(246, 239, 234, 0.7);
+}
+
+/* ============================================================
+   Quick-view CV page
+   ============================================================ */
+.cv-page {
+  min-height: 100vh;
+  min-height: 100svh;
+}
+
+.cv-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 28px clamp(20px, 5vw, 40px) 0;
+}
+
+.cv-action {
+  padding: 7px 13px;
+  border: 1px solid rgba(246, 239, 234, 0.3);
+  border-radius: 2px;
+  background: transparent;
+  color: inherit;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.cv-action:hover,
+.cv-action:focus-visible {
+  background: rgba(246, 239, 234, 0.12);
+  border-color: rgba(246, 239, 234, 0.7);
+}
+
+/* ============================================================
+   Linear CV - quick view, reduced motion, print, accessible baseline
+   ============================================================ */
+.linear {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 56px clamp(20px, 5vw, 40px) 90px;
+}
+
+.linear h1 {
+  margin: 0;
+  font-family: var(--display);
+  font-variation-settings: 'wdth' 120, 'wght' 800;
+  font-size: 2rem;
+  letter-spacing: 0.02em;
+}
+
+.linear h2 {
+  margin: 0 0 8px;
+  font-family: var(--display);
+  font-variation-settings: 'wdth' 116, 'wght' 700;
+  font-size: 1.15rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.linear h3 {
+  margin: 0;
+  font-size: 1rem;
   font-weight: 600;
-  color: #333;
-  margin-bottom: 10px;
 }
 
-@media (min-width: 1024px) {
-  .App {
-    max-width: 100%;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+.linear section {
+  margin-top: 34px;
+  padding-top: 26px;
+  border-top: 1px solid rgba(246, 239, 234, 0.16);
+}
+
+.linear__role,
+.linear__contact {
+  margin: 8px 0 0;
+  opacity: 0.72;
+}
+
+.linear__job {
+  margin-top: 22px;
+}
+
+.linear__period {
+  margin: 4px 0 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  opacity: 0.66;
+}
+
+.linear__stack {
+  margin: 8px 0 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  opacity: 0.66;
+}
+
+.linear__job ul {
+  /* Tailwind's preflight sets `ol, ul, menu { list-style: none }` globally, so
+     the marker has to be restored explicitly or the bullets vanish. */
+  list-style: disc;
+  margin: 10px 0 0;
+  padding-left: 21px;
+  line-height: 1.6;
+  opacity: 0.85;
+}
+
+.linear__job li::marker {
+  color: rgba(246, 239, 234, 0.55);
+}
+
+.linear__job li {
+  padding-left: 3px;
+}
+
+.linear__languages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  max-width: 22rem;
+}
+
+.linear__languages li {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background: rgba(246, 239, 234, 0.07);
+}
+
+.linear a {
+  color: inherit;
+}
+
+/* Present for assistive tech and print, invisible on screen.
+   Deliberately not display:none, which would hide it from screen readers too. */
+.cv-fallback {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+:focus-visible {
+  outline: 2px solid #ffd24a;
+  outline-offset: 3px;
+}
+
+/* ============================================================
+   Responsive + print
+   ============================================================ */
+@media (max-width: 760px) {
+  .rail,
+  .readout--optional {
+    display: none;
   }
 
-  .timeline-container {
-    flex-direction: row;
-    overflow-x: auto;
-    padding: 20px 0;
-    scrollbar-width: thin;
-    scrollbar-color: #4a90e2 #f0f0f0;
+  .vehicle--plane {
+    width: 122vw;
   }
 
-  .timeline-container::-webkit-scrollbar {
-    height: 8px;
+  .vehicle--van {
+    width: 118vw;
   }
 
-  .timeline-container::-webkit-scrollbar-track {
-    background: #f0f0f0;
+  .copy-deck {
+    width: 88vw;
+    min-height: 21rem;
   }
 
-  .timeline-container::-webkit-scrollbar-thumb {
-    background-color: #4a90e2;
-    border-radius: 20px;
-    border: 3px solid #f0f0f0;
+  .copy li {
+    font-size: 0.87rem;
+  }
+}
+
+/* ============================================================
+   Small screens
+   ============================================================ */
+
+/* Rules shared by phones in either orientation: the story compacts, the ground
+   marks and the scroll cue go, and the rail comes back as dots. */
+@media (max-width: 600px), (max-height: 520px) and (orientation: landscape) {
+  /* Both bands are short here, and the copy sits on the ground plane rather
+     than over it, so the runway and road marks would run under the text. At
+     this size they read as noise anyway. */
+  .stripes,
+  .edgelights {
+    display: none;
   }
 
-  .timeline-item {
-    width: 360px;
-    margin-right: 30px;
-    margin-bottom: 0;
+  /* the copy block now occupies the bottom of the screen, where the cue sat */
+  .scrollcue {
+    display: none;
   }
 
-  .timeline-icon {
-    left: 50%;
-    top: -20px;
-    transform: translateX(-50%);
+  .copy ul {
+    max-width: none;
   }
 
-  .timeline-item.experience,
-  .timeline-item.education {
-    border-left: none;
-    border-top: 5px solid;
+  /* name and quick-view keep one line; the role and location are on the card */
+  .brandmark__meta {
+    display: none;
   }
 
-  .timeline-item.experience {
-    border-top-color: #4a90e2;
+  .brandmark {
+    gap: 10px;
   }
 
-  .timeline-item.education {
-    border-top-color: #e94e77;
+  .brandmark__name {
+    font-size: 13px;
+    letter-spacing: 0.12em;
   }
 
-  .timeline-date {
-    position: absolute;
-    top: -45px;
-    left: 0;
+  .brandmark__logo {
+    margin-right: 0.5em;
+  }
+
+  .quickview {
+    padding: 3px 8px;
+    font-size: 10px;
+  }
+
+  .readout b {
+    font-size: 12px;
+  }
+
+  /* The rail was simply hidden below 760px, which left a scroll of a dozen
+     screens with no sense of position. It returns as dots: no labels to fit,
+     and pinned to the frame rather than to a scene's band, so it does not have
+     to follow the per-scene ground heights below. */
+  .rail {
+    display: flex;
+  }
+
+  .stop {
+    gap: 0;
+  }
+
+  .stop span {
+    display: none;
+  }
+
+  .stop u {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(246, 239, 234, 0.34);
+    transition: width 0.45s cubic-bezier(0.2, 0.7, 0.2, 1), height 0.45s ease,
+      background 0.45s ease;
+  }
+
+  .stop--on u {
+    width: 18px;
+    background: #fff;
+    border-radius: 3px;
+  }
+}
+
+/* Portrait phones: the split screen.
+
+   Below 600px there is no room to lay the copy over the illustration - the
+   ground band is about 340px on a 390x844 phone while a copy block runs 400px
+   and more, so the two collide whatever the clamps further up say. The screen
+   is split instead: illustration in the top band, copy in the ground band
+   under it. That is collision-proof by construction rather than by tuning, and
+   costs nothing structurally - the ground already carries an opaque gradient
+   per scene, so it becomes the copy's panel, and vehicles and horizons are
+   already hung off --ground, so they follow the new line on their own.
+
+   --ground is set on .stage rather than :root so each scene can claim the band
+   height its own copy needs. */
+/* Narrow phones (iPhone SE and the like). The monogram costs the brandmark
+   about 22px, which is what tips the quick-view pill off the right edge at
+   320px. Tightening the name's tracking buys it back - nothing is dropped. */
+@media (max-width: 359px) {
+  .brandmark {
+    gap: 8px;
+  }
+
+  .brandmark__name {
+    letter-spacing: 0.06em;
+  }
+
+  .brandmark__logo {
+    margin-right: 0.34em;
+  }
+
+  /* the caret stays - it is the affordance on touch - but it gives back the
+     few pixels it costs the quick-view pill at 320px */
+  .brandmark__caret {
+    margin-left: 0.32em;
+  }
+
+  .quickview {
+    padding: 3px 6px;
+  }
+}
+
+@media (max-width: 600px) {
+  /* One band for every scene, sized for the tallest block in the story
+     (Conze: two roles, seven responsibilities). Per-scene band heights would
+     fit each block more snugly, but both vehicles hang off --ground, so a band
+     that moved between scenes would break the hand-off the whole story is
+     built on - the outgoing object would sit on a different line from the one
+     arriving. */
+  .stage {
+    --ground: 60svh;
+  }
+
+  /* a dozen screens of thumb travel is too many; the choreography is driven by
+     progress alone, so a shorter track compresses the story uniformly */
+  .track {
+    height: 1050svh;
+  }
+
+  /* The readouts and the brandmark cannot both have the top line at 390px -
+     the labels run straight through the quick-view link. The values that carry
+     real content ("M.Sc. Mechatronics", "Bergisch Gladbach") are in the copy
+     below anyway, so the flavour panel is what goes. */
+  .instruments {
+    display: none;
+  }
+
+  /* The deck starts just under the ground line and runs to the dot rail, so
+     the panel is exactly the band the copy has to live in. */
+  .copy-deck {
+    left: clamp(14px, 4vw, 20px);
+    right: clamp(14px, 4vw, 20px);
+    width: auto;
+    top: calc(100% - var(--ground) + 16px);
+    bottom: 32px;
+    min-height: 0;
+  }
+
+  /* Blocks hang from the top of the panel rather than its floor: one band
+     serves every scene, so a bottom-anchored short block would leave a gap
+     under the horizon, while from the top every ticket sits the same distance
+     below the ground line and the slack falls at the end. That also retires
+     the per-scene lifts and sinks tuned against the desktop horizon - they
+     were solving a problem the split has already removed. */
+  .copy,
+  .copy--dense,
+  .copy--aside:not(.copy--dense),
+  .copy--lifted,
+  .copy--lifted[data-scene='education'],
+  .copy[data-scene='conze'] {
+    top: 0;
+    bottom: auto;
     width: 100%;
-    text-align: center;
+  }
+
+  /* the panel is a solid surface, so the block stops carrying its own pool */
+  .copy::before {
+    display: none;
+  }
+
+  /* One column: a 390px screen has no width for a second one, so the roles
+     stack and the badges drop back under the copy. */
+  .copy--aside .copy__body {
+    display: block;
+  }
+
+  .copy--dense .copy__roles {
+    grid-template-columns: 1fr;
+  }
+
+  /* Conze is the exception, and stated here rather than left to specificity:
+     stacked, its seven responsibilities make the block half as tall again,
+     and the band it sets is the one every other scene has to share. Two
+     narrow columns cost some line length; a taller band costs every scene
+     its illustration. It keeps the desktop split, the lead role wider. */
+  .copy--dense.copy--aside .copy__roles {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  }
+
+  .copy--aside .chips,
+  .copy--dense.copy--aside .chips {
+    display: flex;
+  }
+
+  .ticket {
+    margin-bottom: 11px;
+    font-size: 9.5px;
+    letter-spacing: 0.12em;
+  }
+
+  .copy h2,
+  .copy--dense h2 {
+    font-size: clamp(1.75rem, 8.6vw, 2.5rem);
+  }
+
+  .copy h3 {
+    font-size: 0.97rem;
+  }
+
+  .copy__role {
+    margin-top: 10px;
+  }
+
+  .copy ul,
+  .copy--dense ul {
+    gap: 5px;
+    margin-top: 9px;
+  }
+
+  .copy li {
+    font-size: 0.82rem;
+    line-height: 1.4;
+  }
+
+  /* Conze sets the height of the band every other scene then has to live
+     with, so its two roles run one step tighter than the rest. */
+  .copy--dense li {
+    font-size: 0.78rem;
+    line-height: 1.35;
+  }
+
+  .copy--dense .copy__role {
+    margin-top: 7px;
+  }
+
+  .copy .chips,
+  .copy--aside .chips,
+  .copy--dense.copy--aside .chips {
+    gap: 9px 8px;
+    margin-top: 14px;
+  }
+
+  .copy .badge {
+    --badge-w: 52px;
+  }
+
+  .copy .badge__label {
+    font-size: 9px;
+  }
+
+  .copy__links {
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .copy__link {
+    padding: 7px 12px;
+    font-size: 11px;
+  }
+
+  /* the world layers fill the art band instead of the desktop 78/20/26 split */
+  .world-sky {
+    height: calc(100% - var(--ground) + 4svh);
+  }
+
+  .world-horizon {
+    height: 13svh;
+  }
+
+  /* The cloud deck rides down over the ground line as the plane descends
+     (translateY in vh, from the choreography), and at z-index 2 it painted
+     straight over the panel and through the ticket. Dropped to the ground
+     plane's own level, where document order puts the panel on top, it stays
+     in the sky and stops at the horizon. */
+  .world-deck {
+    bottom: calc(var(--ground) + 5svh);
+    height: 18svh;
+    z-index: 0;
+  }
+
+  /* Each object is drawn at full detail, so it is scaled rather than simplified
+     to stay legible in a band a third of a phone screen tall. */
+  .vehicle--plane {
+    width: 108vw;
+  }
+
+  .vehicle--van {
+    width: 104vw;
+  }
+
+  .vehicle--fleet {
+    width: 112vw;
+  }
+
+  .vehicle--cerec {
+    width: 54vw;
+  }
+
+  .vehicle--bench {
+    width: 104vw;
+  }
+
+  .vehicle--bubbles {
+    width: 100vw;
+  }
+
+  .vehicle--signpost {
+    width: 102vw;
+  }
+
+  .rail {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    left: 0;
+    right: 0;
+    bottom: 11px;
+    gap: 9px;
   }
 }
 
-@media (max-width: 1023px) {
-  #root {
-    padding: 0;
+/* Landscape phones. Roughly 200px per band, which the split above cannot
+   absorb, so the screen splits along the other axis: the copy takes a column
+   on the left and the objects move out from under it. The block is back over
+   the illustration here, so it keeps its own pool. */
+@media (max-height: 520px) and (orientation: landscape) {
+  .stage {
+    --ground: 26svh;
   }
 
-  .App {
-    padding: 10px;
-    border-radius: 0;
-    box-shadow: none;
+  /* The block keeps the desktop side-by-side layouts here - two role columns
+     for Conze, badges beside the copy - because height, not width, is what is
+     scarce in landscape. Stacking them the way the portrait tier does would
+     run the tallest scene straight through the brandmark. */
+  .copy-deck {
+    left: clamp(14px, 3vw, 24px);
+    right: auto;
+    width: min(34rem, 64vw);
+    bottom: clamp(10px, 3.5svh, 24px);
+    min-height: 0;
   }
 
-  .header {
-    padding: 15px;
+  .copy,
+  .copy--dense,
+  .copy--aside:not(.copy--dense),
+  .copy--lifted,
+  .copy--lifted[data-scene='education'],
+  .copy[data-scene='conze'] {
+    bottom: 0;
+    width: 100%;
   }
 
-  .main-content {
-    padding: 0;
+  .copy::before {
+    display: block;
   }
 
-  .timeline-item {
-    border-radius: 0;
-    box-shadow: none;
-    border-bottom: 1px solid #e0e0e0;
-    margin-top: 0;
+  .ticket {
+    margin-bottom: 8px;
+    font-size: 9px;
   }
 
-  .timeline-item:last-child {
-    border-bottom: none;
+  .copy h2,
+  .copy--dense h2 {
+    font-size: clamp(1.3rem, 4.6svh, 1.9rem);
   }
 
-  .timeline-icon {
-    left: -15px;
-    width: 30px;
-    height: 30px;
+  .copy h3 {
+    font-size: 0.9rem;
+  }
+
+  .copy__role {
+    margin-top: 8px;
+  }
+
+  .copy ul,
+  .copy--dense ul {
+    gap: 3px;
+    margin-top: 7px;
+  }
+
+  .copy li {
+    font-size: 0.76rem;
+    line-height: 1.35;
+  }
+
+  .copy--dense li {
+    font-size: 0.72rem;
+    line-height: 1.3;
+  }
+
+  .copy--dense .copy__role {
+    margin-top: 5px;
+  }
+
+  .copy .chips,
+  .copy--aside .chips,
+  .copy--dense.copy--aside .chips {
+    gap: 8px 7px;
+    margin-top: 10px;
+  }
+
+  .copy .badge {
+    --badge-w: 46px;
+  }
+
+  .copy .badge__label {
+    font-size: 8.5px;
+  }
+
+  .copy__links {
+    gap: 7px;
+    margin-top: 10px;
+  }
+
+  .copy__link {
+    padding: 6px 10px;
+    font-size: 10px;
+  }
+
+  .world-deck {
+    bottom: calc(var(--ground) + 3svh);
+    height: 24svh;
+  }
+
+  .world-horizon {
+    height: 16svh;
+  }
+
+  /* clear of the copy column */
+  .vehicle {
+    left: 80%;
+  }
+
+  .vehicle--plane {
+    width: 62vw;
+  }
+
+  .vehicle--van {
+    width: 58vw;
+  }
+
+  .vehicle--fleet {
+    width: 64vw;
+  }
+
+  .vehicle--cerec {
+    width: 28vw;
+  }
+
+  .vehicle--bench {
+    width: 58vw;
+  }
+
+  .vehicle--bubbles {
+    width: 56vw;
+  }
+
+  .vehicle--signpost {
+    width: 58vw;
+  }
+
+  .rail {
+    flex-direction: column;
+    align-items: center;
+    right: clamp(10px, 2vw, 18px);
+    bottom: 50%;
+    transform: translateY(50%);
+    gap: 8px;
+  }
+
+  .stop--on u {
+    width: 6px;
+    height: 18px;
+    border-radius: 3px;
+  }
+}
+
+/* The tooltip is hover-only, so a touch device can never reach it. The label
+   and the stars on the shield already carry the meaning, and .badge__sr covers
+   assistive tech, so it is dropped rather than turned into a tap target. */
+@media (hover: none) {
+  .badge__tip {
+    display: none;
+  }
+}
+
+@media print {
+  .track,
+  .cv-actions {
+    display: none;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+  }
+
+  .cv-fallback {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+    clip-path: none;
+    white-space: normal;
+  }
+
+  .linear section {
+    border-top-color: #ccc;
+  }
+
+  .linear__languages li {
+    background: #f2f2f2;
+  }
+
+  /* A printed CV should not read "K8s ***": drop the shield and the face text,
+     and let the assistive-tech line ("Kubernetes - 1 out of 5") show instead. */
+  .chips {
+    gap: 4px 14px;
+  }
+
+  .badge {
+    width: auto;
+    font-size: 10px;
+  }
+
+  .badge__face,
+  .badge__tip {
+    display: none;
+  }
+
+  .badge__sr {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+    clip-path: none;
   }
 }

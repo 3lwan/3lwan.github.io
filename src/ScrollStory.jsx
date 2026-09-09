@@ -213,7 +213,7 @@ export function ScrollStory() {
         <div className="hud brandmark">
           <IdentityBadge />
           <span className="brandmark__meta">
-            {profile.role} · {profile.location}
+            {profile.role} · {profile.country}
           </span>
           <a className="quickview" href="#/cv">
             Quick view ↗

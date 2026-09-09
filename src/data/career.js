@@ -9,6 +9,7 @@ export const profile = {
   name: 'Mohamed Elwan',
   role: 'Senior Software Developer',
   location: 'Bergisch Gladbach, Germany',
+  country: 'Germany',
   email: 'mohamed.elwan.7@gmail.com',
   phone: '+49 176 37110701',
   links: {

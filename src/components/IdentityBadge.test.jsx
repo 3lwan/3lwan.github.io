@@ -68,6 +68,17 @@ describe('IdentityBadge', () => {
     expect(container.querySelector('.idcard__mark svg')).toBeInTheDocument();
   });
 
+  test('shows the pass photo in the shield, decoratively', () => {
+    const { container } = render(<IdentityBadge />);
+
+    fireEvent.click(screen.getByRole('button', { name: profile.name }));
+
+    const photo = container.querySelector('.idcard__shield img');
+    expect(photo).toHaveAttribute('src', '/portrait.jpg');
+    // the name sits beside it, so alt would only repeat it
+    expect(photo).toHaveAttribute('alt', '');
+  });
+
   test('carries the employer palette so the card takes its colours', () => {
     const { container } = render(<IdentityBadge />);
 

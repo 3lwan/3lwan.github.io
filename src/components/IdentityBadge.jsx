@@ -8,8 +8,8 @@ import { MeMark } from '../illustrations/MeMark';
  *
  * Drawn in the skill badges' visual language - the same shield silhouette and
  * the same mono type - but wearing the current employer's colours instead of
- * the badges' neutral glass, so the card reads as an employee pass rather than
- * a sixth skill.
+ * the badges' neutral glass, and a photo in the shield instead of a monogram,
+ * so the card reads as an employee pass rather than a sixth skill.
  *
  * Unlike <SceneCopy/>, this lives in the stage chrome, which is not
  * aria-hidden. The links here are therefore real, focusable links: this is the
@@ -17,11 +17,8 @@ import { MeMark } from '../illustrations/MeMark';
  * keyboard.
  */
 
-/** Initials for the card face, so the monogram follows the name in the data. */
-const MONOGRAM = profile.name
-  .split(' ')
-  .map((part) => part[0])
-  .join('');
+/** The pass photo, cropped to the shield's proportions in public/. */
+const PORTRAIT = '/portrait.jpg';
 
 /**
  * The handle inside a profile URL, so a row reads "GITHUB  3lwan" rather than
@@ -106,7 +103,9 @@ export function IdentityBadge() {
 
           <div className="idcard__body">
             <span className="idcard__shield">
-              <span className="idcard__monogram">{MONOGRAM}</span>
+              {/* Decorative: the name is right beside it, so alt would only
+                  say the same thing twice. */}
+              <img className="idcard__photo" src={PORTRAIT} alt="" />
             </span>
             <div className="idcard__who">
               <b>{profile.name}</b>
